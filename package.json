@@ -1,8 +1,9 @@
 {
   "name": "@iad-os/fantocci",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "Http Testing Tool",
   "main": "/dist/cli.js",
+  "bin": "./dist/cli.js",
   "type": "module",
   "scripts": {
     "dev": "tsx watch --inspect src/cli.ts  | pino-pretty-compact",
