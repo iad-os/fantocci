@@ -204,12 +204,12 @@ export const oauthFantocci: FastifyPluginAsync<OAuthFantocciOptions> =
       );
   };
 
-function extractToken(token: string): string {
+export function extractToken(token: string): string {
   const [, payload] = token.split('.');
   return payload;
 }
 
-function decodeToken(b64Payload: string): string {
+export function decodeToken(b64Payload: string): string {
   return Buffer.from(b64Payload, 'base64').toString();
 }
 
