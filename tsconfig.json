@@ -100,7 +100,9 @@
   },
   "include": [
     "./src/**/*.ts"
-  ],
+,
+"src/.bin/cli.ts"
+],
   "exclude": [
     "./**/*.spec.ts",
     "./**/*.test.ts",

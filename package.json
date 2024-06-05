@@ -2,8 +2,9 @@
   "name": "@iad-os/fantocci",
   "version": "0.0.5",
   "description": "Http Testing Tool",
-  "main": "/dist/cli.js",
-  "bin": "./dist/cli.js",
+  "bin": {
+    "fantocci": "./dist/.bin/cli.js"
+  },
   "type": "module",
   "scripts": {
     "dev": "tsx watch --inspect src/cli.ts  | pino-pretty-compact",
@@ -12,7 +13,7 @@
     "test:run": "vitest run",
     "lint": "eslint",
     "clean": "rimraf dist",
-    "build": "npm run clean & tsc"
+    "build": "rimraf ./dist && tsc  --incremental false"
   },
   "exports": {
     ".": {
