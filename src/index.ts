@@ -18,4 +18,5 @@ export default async function start(port: string | number = 3000, host = '0.0.0.
       app.log.info(`server listening on ${address}`);
     }
   );
+  return app;
 }

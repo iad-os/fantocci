@@ -1,7 +1,7 @@
 {
   "name": "@iad-os/fantocci",
-  "version": "0.0.1",
-  "description": "",
+  "version": "0.0.2",
+  "description": "Http Testing Tool",
   "main": "/dist/cli.js",
   "type": "module",
   "scripts": {
@@ -20,6 +20,9 @@
     }
   },
   "keywords": [],
+  "files": [
+    "dist"
+  ],
   "contributors": [
     {
       "name": "Daniele Fiungo",
