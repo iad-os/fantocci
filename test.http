@@ -1,0 +1,40 @@
+@host=127.0.0.1:3000
+
+###
+# @name missingToken
+DELETE /anything HTTP/1.1
+Host: {{host}}
+ciao: ciao
+
+###
+# @name buildFakeToken
+POST /oauth/_build_fake
+Host: {{host}}
+Content-Type: application/json
+
+{
+  "clientId": "clientId",
+  "clientSecret" : "clientSecret",
+  "expiresIn" : 3600,
+  "body": {
+    "sub" : "daniele-test"
+  }
+}
+
+###
+# @name decodeToken
+GET /oauth/_decode_token
+Host: {{host}}
+Authorization: Bearer eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICJZLUV3NVk4LTBEeWJPcmc4Y0hxNjNGSE1GT0VUU3dvNDRjWnVSV2lxTW9rIn0.eyJleHAiOjE2ODQzMzAwMjIsImlhdCI6MTY4NDMyOTcyMiwianRpIjoiNjZjNmEwMmMtNWI3OC00MTlkLWIwNjUtYjgyYmViZjM5NzhhIiwiaXNzIjoiaHR0cDovL3Nzby5sby5pYWQyLmNsb3VkOjgwODAvYXV0aC9yZWFsbXMvSW50cmFuZXQiLCJhdWQiOiJkZXYiLCJzdWIiOiI1OGM3MDI2MC0wM2E0LTQ0YWYtYTZkYS0zOTJiNzQ3MTVkNzEiLCJ0eXAiOiJCZWFyZXIiLCJhenAiOiJkZXYiLCJzY29wZSI6ImVtYWlsIHByb2ZpbGUiLCJlbWFpbF92ZXJpZmllZCI6ZmFsc2UsImNsaWVudEhvc3QiOiIxNzIuMjEuMC4xIiwicHJlZmVycmVkX3VzZXJuYW1lIjoic2VydmljZS1hY2NvdW50LWRldiIsImNsaWVudEFkZHJlc3MiOiIxNzIuMjEuMC4xIiwiY2xpZW50X2lkIjoiZGV2In0.mLMu_Cyed_nCUaPw7rAkLB6BC-ksvp6WGam_SvsFWa_1Et_5sZDvxpH0yJ9_I6FlEdOG9-WBaIv2bKPw2AjCDN-N5qcFMRPlcgc8M35O80AtRkphuKsEmiuaDWeNK7tHbjET3NEJrdNhPpJL1sKfEkaKSoDXrjCriRVYMWh8XQCCykQmnd8P7ZC1Q0_I_S5UT07eINT1W3oWqGm8zI6JQJN8TaCKLcsvnl44Ds9MH7TSfNaMDTpXQyYeXtzOfEVLN3iInp87n0tm3VSrVzuG7bMtZvj583MBkE57b2TB38bhnjTtf0pB9fRFPwn4-H3wxqUlLtg05_C2Qwkz6QhijQ
+
+
+
+###
+# @name fakeIntrospect
+
+POST /oauth/introspect HTTP/1.1
+Host: {{host}}
+Content-Type: application/x-www-form-urlencoded
+Authorization: Basic clientId clientSecret
+
+token={{buildFakeToken.response.body.*}}
