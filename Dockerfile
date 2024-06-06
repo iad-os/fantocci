@@ -1,7 +1,7 @@
-#ARG NODE_VERSION=18
-ARG FINAL_IMAGE=node:18-alpine
+#ARG NODE_VERSION=20
+ARG FINAL_IMAGE=node:20-alpine
 # ARG BASE_IMAGE=gcr.io/distroless/nodejs
-ARG BUIL_IMAGE=node:18-alpine
+ARG BUIL_IMAGE=node:20-alpine
 ARG USER=node
 
 # Stage-1 prod dependencies
@@ -14,7 +14,7 @@ FROM ${BUIL_IMAGE} as build
 WORKDIR /app
 COPY . .
 RUN npm ci \
-  && npm run test \
+  && npm run test:run \
   && npm run build
 
 
@@ -30,4 +30,4 @@ COPY --chown=${USER}:${USER} ./package*.json ./
 USER ${USER}
 EXPOSE 3000
 # #ENTRYPOINT [ "sleep", "1800" ]
-ENTRYPOINT [ "node", "dist/index.js" ]
+ENTRYPOINT [ "node", "dist/.bin/cli.js" ]
