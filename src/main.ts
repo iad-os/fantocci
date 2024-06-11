@@ -7,9 +7,6 @@ export { Fantocci };
 dotenv.config();
 
 export default async function start({ port, host, https }: FantocciOptions) {
-  if (https) {
-  }
-
   const app = await Fantocci(https);
   const { promise, resolve, reject } = promiseKeeper<typeof app>();
   app.listen(

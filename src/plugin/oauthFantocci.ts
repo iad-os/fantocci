@@ -9,6 +9,29 @@ const OAuthFantocciOptions = Type.Object({
 
 type OAuthFantocciOptions = Static<typeof OAuthFantocciOptions>;
 
+export const FantocciFakerProps = Type.Object({
+      clientId: Type.String({
+        minLength: 1,
+        maxLength: 100,
+        examples: ['clientId'],
+      }),
+      clientSecret: Type.String({
+        minLength: 1,
+        maxLength: 100,
+        examples: ['clientSecret'],
+      }),
+      active: Type.Boolean({
+        description: 'Is the token still active',
+      }),
+      diffIssuers: Type.Optional(
+        Type.Boolean({
+          default: false,
+          description: 'Token is issued by a different idp domain',
+        })
+      ),
+    })
+
+export type FantocciFakerProps = Static<typeof FantocciFakerProps>;
 const FakeToken = Type.Object(
   {
     additional_fake_props: Type.Object({
@@ -94,22 +117,7 @@ const FakeToken = Type.Object(
       Type.String({
         description:
           ' Human-readable identifier for the resource owner who authorized this token',
-      })
-    ),
-    resource_access: Type.Optional(
-      Type.Record(
-        Type.String(),
-        Type.Object({ roles: Type.Array(Type.String(), { default: [] }) })
-      )
-    ),
-    realm_access: Type.Optional(
-      Type.Object({
-        roles: Type.Array(Type.String(), { default: [] }),
-      })
-    ),
-    cached: Type.Boolean({
-      default: false,
-    }),
+      }))
   },
   { additionalProperties: true }
 );
