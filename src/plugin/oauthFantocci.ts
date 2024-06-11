@@ -3,6 +3,7 @@ import { TypeBoxTypeProvider } from '@fastify/type-provider-typebox';
 import { Static, Type } from '@sinclair/typebox';
 import { Value } from '@sinclair/typebox/value';
 import { FastifyPluginAsync } from 'fastify';
+import omit from 'lodash.omit';
 import { Simplify } from 'type-fest';
 
 const OAuthFantocciOptions = Type.Object({
@@ -198,7 +199,7 @@ export const oauthFantocci: FastifyPluginAsync<OAuthFantocciOptions> =
           return reply.send(
             additional_fake_props.active
               ? {
-                  ...payload,
+                  ...omit(payload, additional_fake_props.omit ?? []),
                   active: true,
                 }
               : { active: false }
@@ -272,4 +273,14 @@ export function issuedAt(secondsBeforeNow: number): number {
 
 export function issueNow(): number {
   return issuedAt(0);
+}
+
+export function buildFakeAccessToken(
+  accessToken: AccessTokenLikeRFC9068 & { [key: string]: unknown },
+  fantocciFakerProps: FantocciFakerProps
+): string {
+  return buildToken({
+    ...accessToken,
+    additional_fake_props: fantocciFakerProps,
+  });
 }

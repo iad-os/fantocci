@@ -1,6 +1,7 @@
 import { fastify } from 'fastify';
 import {
   FakeAccessToken,
+  buildFakeAccessToken,
   buildToken,
   oauthFantocci,
 } from '../plugin/oauthFantocci.js';
@@ -117,5 +118,43 @@ describe('OAuth2 Test Suite', () => {
     fantocci.log.debug(res, 'Response');
     const { statusCode } = res;
     expect(statusCode).toBe(401);
+  });
+
+  it('omit from introspect', async () => {
+    const token = buildFakeAccessToken(
+      {
+        client_id: 'clientId',
+        iss: 'http://myhost',
+        exp: 1234567890,
+        iat: 1234567890,
+        jti: 'jti',
+        aud: 'dev',
+        sub: 'a-man-have-a-subject',
+      },
+      {
+        clientId: 'clientId',
+        clientSecret: 'clientSecret',
+        active: true,
+        omit: ['exp', 'iat', 'jti', 'sub', 'aud', 'iss', 'client_id'],
+      }
+    );
+    const res = await fantocci.inject({
+      method: 'POST',
+      path: '/introspect',
+      headers: {
+        host: 'myhost',
+        'content-type': 'application/x-www-form-urlencoded',
+        authorization: `Basic ${Buffer.from(
+          `${aValidPayload?.additional_fake_props?.clientId}:${aValidPayload?.additional_fake_props?.clientSecret}`
+        ).toString('base64')}`,
+      },
+      payload: `token=${token}`,
+    });
+    fantocci.log.debug(res, 'Response');
+    const { statusCode } = res;
+    expect(statusCode).toBe(200);
+    expect(res.json()).toEqual({
+      active: true,
+    });
   });
 });
