@@ -26,7 +26,8 @@ export const anythingFantocci: FastifyPluginAsync<AnythingFantocciOptions> =
           ],
           body: Type.Union([Type.String(), Type.Any()]),
         },
-        url: '/anything',
+        url: '/',
+        prefixTrailingSlash: 'no-slash',
         handler: async (req, reply) => {
           reply.send({
             headers: req.headers,
@@ -41,7 +42,8 @@ export const anythingFantocci: FastifyPluginAsync<AnythingFantocciOptions> =
           tags: ['request-inspection'],
           produces: ['application/json'],
         },
-        url: '/anything',
+        url: '/',
+        prefixTrailingSlash: 'no-slash',
         handler: async (req, reply) => {
           reply.send({
             headers: req.headers,
