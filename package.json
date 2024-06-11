@@ -1,6 +1,6 @@
 {
   "name": "@iad-os/fantocci",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "description": "Http Testing Tool",
   "bin": {
     "fantocci": "./dist/.bin/cli.js"
@@ -35,7 +35,7 @@
       "email": "irene.labollita@iad2.it"
     }
   ],
-  "license": "ISC",
+  "license": "MIT",
   "dependencies": {
     "@fastify/formbody": "^7.4.0",
     "@fastify/helmet": "^11.1.1",
