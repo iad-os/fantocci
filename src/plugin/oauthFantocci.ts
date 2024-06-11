@@ -19,7 +19,7 @@ export const AccessTokenLikeRFC9068 = Type.Object({
   }),
   exp: Type.Number({
     description: 'REQUIRED - as defined in Section 4.1.4 of [RFC7519]',
-    default: expiresIn(36000),
+    examples: [expiresIn(36000)],
   }),
   aud: Type.Union([Type.String(), Type.Array(Type.String())], {
     description:
@@ -36,7 +36,7 @@ export const AccessTokenLikeRFC9068 = Type.Object({
   iat: Type.Number({
     description:
       'REQUIRED - as defined in Section 4.1.6 of [RFC7519]. This claim identifies the time at which the JWT access token was issued.',
-    default: issueNow(),
+    examples: [issueNow()],
   }),
   jti: Type.String({
     description:
@@ -45,7 +45,7 @@ export const AccessTokenLikeRFC9068 = Type.Object({
 
   auth_time: Type.Optional(
     Type.String({
-      default: issueNow(),
+      examples: [issueNow()],
       description:
         'Time when the End-User authentication occurred. Its value is a JSON number representing the number of seconds from 1970-01-01T00:00:00Z as measured in UTC until the date/time.',
     })
@@ -64,7 +64,7 @@ export const AccessTokenLikeRFC9068 = Type.Object({
   ),
   scope: Type.Optional(
     Type.String({
-      default: 'openid',
+      examples: ['openid'],
       description:
         'The value of the scope claim is a JSON string containing a space-separated list of scopes associated with the token, in the format described in Section 3.3 of [RFC6749].',
     })
@@ -77,7 +77,6 @@ export const AccessTokenLikeRFC9068 = Type.Object({
           roles: Type.Array(Type.String(), {}),
         },
         {
-          default: {},
           examples: [
             {
               nightswatch: {
@@ -98,7 +97,6 @@ export const AccessTokenLikeRFC9068 = Type.Object({
   realm_access: Type.Optional(
     Type.Object({
       roles: Type.Array(Type.String(), {
-        default: {},
         examples: [['ghost']],
       }),
     })
