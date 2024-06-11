@@ -13,11 +13,17 @@ Host: {{host}}
 Content-Type: application/json
 
 {
-  "clientId": "clientId",
-  "clientSecret" : "clientSecret",
-  "expiresIn" : 3600,
-  "body": {
-    "sub" : "daniele-test"
+  "client_id": "clientId",
+  "iss": "http://{{host}}",
+  "exp": {{$timestamp}},
+  "iat": {{$timestamp}},
+  "jti": "66c6a02c-5b78-419d-b065-b82bebf3978a",
+  "aud": "dev",
+  "sub": "a-man-have-a-subject",
+  "additional_fake_props": {
+    "clientId": "clientId",
+    "clientSecret" : "clientSecret",
+    "active": true
   }
 }
 
@@ -32,8 +38,17 @@ Authorization: Bearer eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICJZLUV3NV
 ###
 # @name fakeIntrospect
 
-POST /oauth/introspect HTTP/1.1
+POST http://fantocci.lo.iad2.cloud:3000/oauth/introspect HTTP/1.1
 Host: {{host}}
+Content-Type: application/x-www-form-urlencoded
+Authorization: Basic clientId clientSecret
+
+token={{buildFakeToken.response.body.*}}
+
+###
+# @name fakeIntrospect2
+
+POST http://fantocci.lo.iad2.cloud:3000/oauth/introspect HTTP/1.1
 Content-Type: application/x-www-form-urlencoded
 Authorization: Basic clientId clientSecret
 

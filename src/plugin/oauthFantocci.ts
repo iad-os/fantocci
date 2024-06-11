@@ -1,7 +1,9 @@
 import formbody from '@fastify/formbody';
 import { TypeBoxTypeProvider } from '@fastify/type-provider-typebox';
 import { Static, Type } from '@sinclair/typebox';
+import { Value } from '@sinclair/typebox/value';
 import { FastifyPluginAsync } from 'fastify';
+import { Simplify } from 'type-fest';
 
 const OAuthFantocciOptions = Type.Object({
   prefix: Type.String({ pattern: '/S+' }),
@@ -10,119 +12,103 @@ const OAuthFantocciOptions = Type.Object({
 type OAuthFantocciOptions = Static<typeof OAuthFantocciOptions>;
 
 export const FantocciFakerProps = Type.Object({
-      clientId: Type.String({
-        minLength: 1,
-        maxLength: 100,
-        examples: ['clientId'],
-      }),
-      clientSecret: Type.String({
-        minLength: 1,
-        maxLength: 100,
-        examples: ['clientSecret'],
-      }),
-      active: Type.Boolean({
-        description: 'Is the token still active',
-      }),
-      diffIssuers: Type.Optional(
-        Type.Boolean({
-          default: false,
-          description: 'Token is issued by a different idp domain',
-        })
-      ),
-    })
+  clientId: Type.String({
+    minLength: 1,
+    maxLength: 100,
+    examples: ['clientId'],
+  }),
+  clientSecret: Type.String({
+    minLength: 1,
+    maxLength: 100,
+    examples: ['clientSecret'],
+  }),
+  active: Type.Boolean({
+    description: 'Is the token still active',
+  }),
+});
 
-export type FantocciFakerProps = Static<typeof FantocciFakerProps>;
-const FakeToken = Type.Object(
+export const AccessTokenLikeRFC9068 = Type.Object(
   {
-    additional_fake_props: Type.Object({
-      clientId: Type.String({
-        minLength: 1,
-        maxLength: 100,
-        examples: ['clientId'],
-      }),
-      clientSecret: Type.String({
-        minLength: 1,
-        maxLength: 100,
-        examples: ['clientSecret'],
-      }),
-      active: Type.Boolean({
-        description: 'Is the token still active',
-      }),
-      diffIssuers: Type.Optional(
-        Type.Boolean({
-          default: false,
-          description: 'Token is issued by a different idp domain',
-        })
-      ),
-    }),
-    active: Type.Boolean({
-      description:
-        'REQUIRED. Boolean indicator of whether or not the presented token is currently active. The specifics of a token\'s "active" state will vary depending on the implementation of the authorization server and the information it keeps about its tokens, but a "true" value return for the "active" property will generally indicate that a given token has been issued by this authorization server, has not been revoked by the resource owner, and is within its given time window of validity (e.g., after its issuance time and before its expiration time).',
-    }),
+    //https://datatracker.ietf.org/doc/html/rfc9068#section-2.2
     iss: Type.String({
-      description:
-        'The "iss" (issuer) claim identifies the principal that issued the JWT. The processing of this claim is generally application specific. The "iss" value is a case-sensitive string containing a StringOrURI value',
+      description: 'REQUIRED - as defined in Section 4.1.1 of [RFC7519]',
     }),
-
     exp: Type.Number({
-      description:
-        'The "exp" (expiration time) claim identifies the expiration time on or after which the JWT MUST NOT be accepted for processing. The processing of the "exp" claim requires that the current date/time MUST be before the expiration date/time listed in the "exp" claim',
+      description: 'REQUIRED - as defined in Section 4.1.4 of [RFC7519]',
     }),
-    aud: Type.Union([
-      Type.String({
-        description:
-          'The "aud" (audience) claim identifies the recipients that the JWT is intended for. Each principal intended to process the JWT MUST identify itself with a value in the audience claim. If the principal processing the claim does not identify itself with a value in the "aud" claim when this claim is present, then the JWT MUST be rejected. In the general case, the "aud" value is an array of case- sensitive strings, each containing a StringOrURI value. In the special case when the JWT has one audience, the "aud" value MAY be a single case-sensitive string containing a StringOrURI value. The interpretation of audience values is generally application specific.',
-      }),
-      Type.Array(
-        Type.String({
-          description:
-            'the "aud" value is an array of case- sensitive strings, each containing a StringOrURI value. In the special case when the JWT has one audience, the "aud" value MAY be a single case-sensitive string containing a StringOrURI value.',
-        }),
-        { default: [] }
-      ),
-    ]),
+    aud: Type.Union([Type.String(), Type.Array(Type.String())], {
+      description:
+        "REQUIRED - as defined in Section 4.1.3 of [RFC7519]. See Section 3 for indications on how an authorization server should determine the value of 'aud' depending on the request.",
+    }),
     sub: Type.String({
       description:
-        'The "sub" (subject) claim identifies the principal that is the subject of the JWT. The claims in a JWT are normally statements about the subject. The subject value MUST either be scoped to be locally unique in the context of the issuer or be globally unique. The processing of this claim is generally application specific. The "sub" value is a case-sensitive string containing a StringOrURI value.',
+        "REQUIRED - as defined in Section 4.1.2 of [RFC7519]. In cases of access tokens obtained through grants where a resource owner is involved, such as the authorization code grant, the value of 'sub' SHOULD correspond to the subject identifier of the resource owner. In cases of access tokens obtained through grants where no resource owner is involved, such as the client credentials grant, the value of 'sub' SHOULD correspond to an identifier the authorization server uses to indicate the client application. See Section 5 for more details on this scenario. Also, see Section 6 for a discussion about how different choices in assigning 'sub' values can impact privacy.",
+    }),
+    client_id: Type.String({
+      description:
+        'REQUIRED - as defined in Section 4.3 of [RFC8693]. The client_id claim carries the client identifier of the OAuth 2.0 [RFC6749] client that requested the token.',
     }),
     iat: Type.Number({
       description:
-        'The "iat" (issued at) claim identifies the time at which the JWT was issued. This claim can be used to determine the age of the JWT. Its value MUST be a number containing a NumericDate value.',
+        'REQUIRED - as defined in Section 4.1.6 of [RFC7519]. This claim identifies the time at which the JWT access token was issued.',
     }),
-    azp: Type.String(),
     jti: Type.String({
       description:
-        'The "jti" (JWT ID) claim provides a unique identifier for the JWT. The identifier value MUST be assigned in a manner that ensures that there is a negligible probability that the same value will be accidentally assigned to a different data object; if the application uses multiple issuers, collisions MUST be prevented among values produced by different issuers as well. The "jti" claim can be used to prevent the JWT from being replayed. The "jti" value is a case- sensitive string.',
+        'REQUIRED - as defined in Section 4.1.7 of [RFC7519]. The "jti" (JWT ID) claim provides a unique identifier for the JWT.',
     }),
-    email: Type.Optional(Type.String()),
-    token_type: Type.Optional(
+
+    auth_time: Type.Optional(
       Type.String({
         description:
-          ' Type of the token as defined in Section 5.1 of OAuth2.0 [RFC6749].',
+          'Time when the End-User authentication occurred. Its value is a JSON number representing the number of seconds from 1970-01-01T00:00:00Z as measured in UTC until the date/time.',
+      })
+    ),
+    acr: Type.Optional(
+      Type.String({
+        description:
+          'Authentication Context Class Reference. String specifying an Authentication Context Class Reference value that identifies the Authentication Context Class that the authentication performed satisfied. The value "0" indicates the End-User authentication did not meet the requirements of ISO/IEC 29115 [ISO29115] level 1. For historic reasons, the value "0" is used to indicate that there is no confidence that the same person is actually there. Authentications with level 0 SHOULD NOT be used to authorize access to any resource of any monetary value. (This corresponds to the OpenID 2.0 PAPE [OpenID.PAPE] nist_auth_level 0.) An absolute URI or an RFC 6711 [RFC6711] registered name SHOULD be used as the acr value; registered names MUST NOT be used with a different meaning than that which is registered. Parties using this claim will need to agree upon the meanings of the values used, which may be context specific. The acr value is a case-sensitive string.',
+      })
+    ),
+    amr: Type.Optional(
+      Type.Array(Type.String(), {
+        description:
+          'Authentication Methods References. JSON array of strings that are identifiers for authentication methods used in the authentication. For instance, values might indicate that both password and OTP authentication methods were used. The definition of particular values to be used in the amr Claim is beyond the scope of this specification. Parties using this claim will need to agree upon the meanings of the values used, which may be context specific. The amr value is an array of case-sensitive strings.',
       })
     ),
     scope: Type.Optional(
       Type.String({
         description:
-          'A JSON string containing a space-separated list of scopes associated with this token, in the format described in Section 3.3 of OAuth 2.0 [RFC6749].',
+          'The value of the scope claim is a JSON string containing a space-separated list of scopes associated with the token, in the format described in Section 3.3 of [RFC6749].',
       })
     ),
-    client_id: Type.Optional(
-      Type.String({
-        description:
-          'Client identifier for the OAuth 2.0 client that requested this token.',
+    resource_access: Type.Optional(
+      Type.Record(
+        Type.String(),
+        Type.Object({ roles: Type.Array(Type.String(), { default: [] }) })
+      )
+    ),
+    realm_access: Type.Optional(
+      Type.Object({
+        roles: Type.Array(Type.String(), { default: [] }),
       })
     ),
-    username: Type.Optional(
-      Type.String({
-        description:
-          ' Human-readable identifier for the resource owner who authorized this token',
-      }))
   },
   { additionalProperties: true }
 );
 
-export type FakeToken = Static<typeof FakeToken>;
+export type AccessTokenLikeRFC9068 = Static<typeof AccessTokenLikeRFC9068>;
+
+export type FantocciFakerProps = Static<typeof FantocciFakerProps>;
+
+export const FakeAccessToken = Type.Intersect([
+  AccessTokenLikeRFC9068,
+  Type.Object({ additional_fake_props: FantocciFakerProps }),
+]);
+
+export type FakeAccessToken = Simplify<
+  Static<typeof FakeAccessToken> & { [key: string]: unknown }
+>;
+
 export const oauthFantocci: FastifyPluginAsync<OAuthFantocciOptions> =
   async function (fastify) {
     fastify
@@ -149,8 +135,9 @@ export const oauthFantocci: FastifyPluginAsync<OAuthFantocciOptions> =
           },
         },
         async (request, reply) => {
-          const fakeToken: FakeToken = JSON.parse(
-            decodeToken(extractToken(request.body.token))
+          const fakeToken = Value.Cast(
+            FakeAccessToken,
+            JSON.parse(decodeToken(extractToken(request.body.token)))
           );
           const { additional_fake_props, ...payload } = fakeToken;
           const [type, credentials] = (
@@ -169,7 +156,8 @@ export const oauthFantocci: FastifyPluginAsync<OAuthFantocciOptions> =
           ) {
             return reply.status(401).send({ message: 'Unauthorized' });
           }
-          if (additional_fake_props?.diffIssuers) {
+
+          if (new URL(fakeToken.iss).host !== request.hostname) {
             return reply.send({ active: false });
           }
 
@@ -188,7 +176,7 @@ export const oauthFantocci: FastifyPluginAsync<OAuthFantocciOptions> =
         {
           schema: {
             tags: ['oauth'],
-            body: FakeToken,
+            body: FakeAccessToken,
             consumes: ['application/json'],
           },
         },
