@@ -1,6 +1,6 @@
 {
   "name": "@iad-os/fantocci",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "Http Testing Tool",
   "bin": {
     "fantocci": "./dist/.bin/cli.js"
