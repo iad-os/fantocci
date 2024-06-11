@@ -1,7 +1,7 @@
 import { fastify } from 'fastify';
 import {
+  FakeAccessToken,
   buildToken,
-  FakeToken,
   oauthFantocci,
 } from '../plugin/oauthFantocci.js';
 import { describe, it, expect } from 'vitest';
@@ -9,7 +9,7 @@ describe('OAuth2 Test Suite', () => {
   const fantocci = fastify({ logger: { level: 'debug' } }).register(
     oauthFantocci
   );
-  const aValidPayload: FakeToken = {
+  const aValidPayload: FakeAccessToken = {
     client_id: 'clientId',
     iss: 'http://myhost',
     exp: 1234567890,
