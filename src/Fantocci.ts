@@ -1,15 +1,41 @@
-import fastify from 'fastify';
-import { oauthFantocci } from './oauthFantocci.js';
 import fastifySwagger from '@fastify/swagger';
-import { Type } from '@sinclair/typebox';
 import { TypeBoxTypeProvider } from '@fastify/type-provider-typebox';
-import formbody from '@fastify/formbody';
 import apiReference from '@scalar/fastify-api-reference';
+import fastify from 'fastify';
+import { anythingFantocci } from './plugin/anything.js';
+import { oauthFantocci } from './plugin/oauthFantocci.js';
+import { FantocciOptions } from './options.js';
+import { createCertificate } from './certUtils.js';
 
-export async function Fantocci() {
+export async function Fantocci(https: FantocciOptions['https']) {
+  let certs: Awaited<ReturnType<typeof createCertificate>> | undefined =
+    undefined;
+  if (https) {
+    certs = await createCertificate({
+      cert: {
+        domains: https.split(','),
+        validity: 365,
+        organization: 'IAD Srl',
+        email: 'fantocci@iad2.it',
+      },
+    });
+  }
+
   const fantocci = await fastify({
     logger: { level: 'debug' },
+    ...(certs
+      ? {
+          http2: true,
+          https: {
+            allowHTTP1: true, // f
+            ca: certs.ca.cert,
+            key: certs.certs.key,
+            cert: certs.certs.cert,
+          },
+        }
+      : {}),
   }).withTypeProvider<TypeBoxTypeProvider>();
+
   await fantocci
     .register(fastifySwagger, {
       prefix: '/ui',
@@ -38,43 +64,8 @@ export async function Fantocci() {
 
   await fantocci
     .register(oauthFantocci, { prefix: '/oauth' })
-    .register(formbody)
-    .route({
-      method: ['DELETE', 'PATCH', 'POST', 'PUT', 'OPTIONS'],
-      schema: {
-        tags: ['request-inspection'],
-        produces: ['application/json'],
-        consumes: [
-          'text/plain',
-          'application/json',
-          'application/x-www-form-urlencoded',
-        ],
-        body: Type.Union([Type.String(), Type.Any()]),
-      },
-      url: '/anything',
-      handler: async (req, reply) => {
-        reply.send({
-          headers: req.headers,
-          params: req.params,
-          body: req.body,
-        });
-      },
-    })
-    .route({
-      method: ['GET', 'HEAD'],
-      schema: {
-        tags: ['request-inspection'],
-        produces: ['application/json'],
-      },
-      url: '/anything',
-      handler: async (req, reply) => {
-        reply.send({
-          headers: req.headers,
-          params: req.params,
-          body: req.body,
-        });
-      },
-    })
+    .register(anythingFantocci, { prefix: '/anything' })
+
     .route({
       method: ['GET'],
       url: '/',

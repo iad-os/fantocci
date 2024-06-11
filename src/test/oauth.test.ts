@@ -1,5 +1,9 @@
 import { fastify } from 'fastify';
-import { buildToken, FakeToken, oauthFantocci } from '../oauthFantocci';
+import {
+  buildToken,
+  FakeToken,
+  oauthFantocci,
+} from '../plugin/oauthFantocci.js';
 import { describe, it, expect } from 'vitest';
 describe('OAuth2 Test Suite', () => {
   const fantocci = fastify({ logger: { level: 'debug' } }).register(
