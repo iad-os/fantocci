@@ -7,8 +7,7 @@ import { oauthFantocci } from './plugin/oauthFantocci.js';
 import { FantocciOptions } from './options.js';
 import { createCertificate } from './certUtils.js';
 import { version } from '../package.json';
-import { ReferenceConfiguration } from '@scalar/api-reference';
-import swaggerUI from '@fastify/swagger-ui';
+import { type ReferenceConfiguration } from '@scalar/api-reference';
 
 export async function Fantocci(https: FantocciOptions['https']) {
   let certs: Awaited<ReturnType<typeof createCertificate>> | undefined =
@@ -75,15 +74,6 @@ export async function Fantocci(https: FantocciOptions['https']) {
         layout: 'modern',
       } as ReferenceConfiguration,
       routePrefix: '/ui',
-    })
-    .register(swaggerUI, {
-      routePrefix: '/documentation',
-      uiConfig: {
-        docExpansion: 'full',
-        deepLinking: true,
-      },
-
-      transformSpecificationClone: true,
     });
 
   await fantocci
@@ -97,7 +87,7 @@ export async function Fantocci(https: FantocciOptions['https']) {
         hide: true,
       },
       handler: (_, reply) => {
-        reply.redirect('/documentation');
+        reply.redirect('/ui');
       },
     });
 
