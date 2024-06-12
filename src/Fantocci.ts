@@ -6,7 +6,6 @@ import { anythingFantocci } from './plugin/anything.js';
 import { oauthFantocci } from './plugin/oauthFantocci.js';
 import { FantocciOptions } from './options.js';
 import { createCertificate } from './certUtils.js';
-import { version } from '../package.json';
 import { type ReferenceConfiguration } from '@scalar/api-reference';
 
 export async function Fantocci(https: FantocciOptions['https']) {
@@ -45,7 +44,7 @@ export async function Fantocci(https: FantocciOptions['https']) {
         info: {
           title: 'Fantocci HTTP Test Suite',
           description: 'testing the fastify swagger api',
-          version,
+          version: '0.2.30',
         },
         tags: [
           { name: 'oauth', description: 'OAuth2 testing __endpoint__' },
