@@ -29,7 +29,7 @@ export const anythingFantocci: FastifyPluginAsync<AnythingFantocciOptions> =
         url: '/',
         prefixTrailingSlash: 'no-slash',
         handler: async (req, reply) => {
-          reply.send({
+          await reply.send({
             headers: req.headers,
             params: req.params,
             body: req.body,
@@ -45,11 +45,11 @@ export const anythingFantocci: FastifyPluginAsync<AnythingFantocciOptions> =
         url: '/',
         prefixTrailingSlash: 'no-slash',
         handler: async (req, reply) => {
-          reply.send({
-            headers: req.headers,
-            params: req.params,
-            body: req.body,
-          });
+         await reply.send({
+           headers: req.headers,
+           params: req.params,
+           body: req.body,
+         });
         },
       });
   };

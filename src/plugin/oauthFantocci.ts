@@ -4,6 +4,7 @@ import { Static, Type } from '@sinclair/typebox';
 import { Value } from '@sinclair/typebox/value';
 import { FastifyPluginAsync } from 'fastify';
 import omit from 'lodash.omit';
+import { nanoid } from 'nanoid';
 import { Simplify } from 'type-fest';
 
 const OAuthFantocciOptions = Type.Object({
@@ -273,6 +274,10 @@ export function issuedAt(secondsBeforeNow: number): number {
 
 export function issueNow(): number {
   return issuedAt(0);
+}
+
+export function jwtId(): string {
+  return nanoid();
 }
 
 export function buildFakeAccessToken(

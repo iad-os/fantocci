@@ -6,6 +6,9 @@ import { anythingFantocci } from './plugin/anything.js';
 import { oauthFantocci } from './plugin/oauthFantocci.js';
 import { FantocciOptions } from './options.js';
 import { createCertificate } from './certUtils.js';
+import { version } from '../package.json';
+import { ReferenceConfiguration } from '@scalar/api-reference';
+import swaggerUI from '@fastify/swagger-ui';
 
 export async function Fantocci(https: FantocciOptions['https']) {
   let certs: Awaited<ReturnType<typeof createCertificate>> | undefined =
@@ -43,8 +46,12 @@ export async function Fantocci(https: FantocciOptions['https']) {
         info: {
           title: 'Fantocci HTTP Test Suite',
           description: 'testing the fastify swagger api',
-          version: '0.1.0',
+          version,
         },
+        tags: [
+          { name: 'oauth', description: 'OAuth2 testing __endpoint__' },
+          { name: 'anything', description: 'Anything endpoints' },
+        ],
         components: {
           securitySchemes: {
             'Basic Authentication': {
@@ -59,7 +66,24 @@ export async function Fantocci(https: FantocciOptions['https']) {
       hideUntagged: false,
     })
     .register(apiReference, {
+      configuration: {
+        title: 'Our API Reference',
+        metaData: {
+          title: 'Fantocci HTTP Test Suite',
+          applicationName: 'Fantocci',
+        },
+        layout: 'modern',
+      } as ReferenceConfiguration,
       routePrefix: '/ui',
+    })
+    .register(swaggerUI, {
+      routePrefix: '/documentation',
+      uiConfig: {
+        docExpansion: 'full',
+        deepLinking: true,
+      },
+
+      transformSpecificationClone: true,
     });
 
   await fantocci
@@ -73,7 +97,7 @@ export async function Fantocci(https: FantocciOptions['https']) {
         hide: true,
       },
       handler: (_, reply) => {
-        reply.redirect('/ui');
+        reply.redirect('/documentation');
       },
     });
 
