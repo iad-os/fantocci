@@ -8,7 +8,7 @@ import { FantocciOptions } from './options.js';
 import { anythingFantocci } from './plugin/anything.js';
 import { oauthFantocci } from './plugin/oauthFantocci.js';
 
-export async function Fantocci(https: FantocciOptions['https']) {
+export async function Fantocci({ https, anything }: FantocciOptions) {
   let certs: Awaited<ReturnType<typeof createCertificate>> | undefined =
     undefined;
   if (https) {
@@ -79,7 +79,8 @@ export async function Fantocci(https: FantocciOptions['https']) {
     .register(oauthFantocci, { prefix: '/oauth' })
     .register(anythingFantocci, {
       prefix: '/anything',
-      maxDelay: 1000 * 60 * 10,
+      maxDelay: anything.maxDelay,
+      delay: anything.delay,
     })
 
     .route({

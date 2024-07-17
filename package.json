@@ -7,7 +7,7 @@
   },
   "type": "module",
   "scripts": {
-    "dev": "tsx watch --inspect src/index.ts  | pino-pretty-compact",
+    "dev": "tsx watch --inspect src/index.ts | pino-pretty-compact",
     "start": "tsx src/index.ts  | pino-pretty-compact",
     "test": "vitest",
     "test:run": "vitest run",

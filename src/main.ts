@@ -6,8 +6,13 @@ export * from './plugin/oauthFantocci.js';
 export { Fantocci };
 dotenv.config();
 
-export default async function start({ port, host, https }: FantocciOptions) {
-  const app = await Fantocci(https);
+export default async function start({
+  port,
+  host,
+  https,
+  anything,
+}: FantocciOptions) {
+  const app = await Fantocci({ https, anything });
   const { promise, resolve, reject } = promiseKeeper<typeof app>();
   app.listen(
     {

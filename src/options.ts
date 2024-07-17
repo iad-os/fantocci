@@ -3,6 +3,7 @@ import { Static, Type } from '@sinclair/typebox';
 import { Simplify } from 'type-fest';
 import minimist from 'minimist';
 import { Value } from '@sinclair/typebox/value';
+import { AnythingFantocciOptions } from './plugin/anything';
 
 export const FantocciOptions = Type.Object(
   {
@@ -27,6 +28,7 @@ export const FantocciOptions = Type.Object(
           'If false disable HTTPS, if true certs will be generated automatically',
       }
     ),
+    anything: AnythingFantocciOptions,
   },
   { additionalProperties: false }
 );
@@ -44,8 +46,36 @@ export default ghii(FantocciOptions)
     };
   })
   .loader(async () => {
-    const { _, p, h, cn } = minimist(process.argv.slice(2), {
-      alias: { p: 'port', h: 'host', cn: 'common-name' },
+    if (process.env.ANYTHING_DELAY || process.env.ANYTHING_MAX_DELAY)
+      return {
+        anything: {
+          delay: process.env.ANYTHING_DELAY
+            ? parseInt(process.env.ANYTHING_DELAY, 10)
+            : undefined,
+          maxDelay: process.env.ANYTHING_MAX_DELAY
+            ? parseInt(process.env.ANYTHING_MAX_DELAY, 10)
+            : undefined,
+        },
+      };
+    return {};
+  })
+  .loader(async () => {
+    const { _, p, h, cn, d, md } = minimist(process.argv.slice(2), {
+      alias: {
+        p: 'port',
+        h: 'host',
+        cn: 'common-name',
+        d: 'anything-delay',
+        md: 'max-delay',
+      },
     });
-    return { port: p || _[0], host: h, https: cn };
+    return {
+      port: p || _[0],
+      host: h,
+      https: cn,
+      anything: {
+        delay: d ? parseInt(d, 10) : undefined,
+        maxDelay: md ? parseInt(md, 10) : undefined,
+      },
+    };
   });
