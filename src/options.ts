@@ -28,7 +28,7 @@ export const FantocciOptions = Type.Object(
           'If false disable HTTPS, if true certs will be generated automatically',
       }
     ),
-    anything: Type.Optional(AnythingFantocciOptions),
+    anything: AnythingFantocciOptions,
   },
   { additionalProperties: false }
 );
@@ -49,12 +49,12 @@ export default ghii(FantocciOptions)
     if (process.env.ANYTHING_DELAY || process.env.ANYTHING_MAX_DELAY)
       return {
         anything: {
-          delay: process.env.ANYTHING_DELAY
-            ? parseInt(process.env.ANYTHING_DELAY, 10)
-            : undefined,
-          maxDelay: process.env.ANYTHING_MAX_DELAY
-            ? parseInt(process.env.ANYTHING_MAX_DELAY, 10)
-            : undefined,
+          ...(process.env.ANYTHING_DELAY
+            ? { delay: parseInt(process.env.ANYTHING_DELAY, 10) }
+            : {}),
+          ...(process.env.ANYTHING_MAX_DELAY
+            ? { maxDelay: parseInt(process.env.ANYTHING_MAX_DELAY, 10) }
+            : {}),
         },
       };
     return {};
@@ -73,9 +73,13 @@ export default ghii(FantocciOptions)
       port: p || _[0],
       host: h,
       https: cn,
-      anything: {
-        delay: d ? parseInt(d, 10) : undefined,
-        maxDelay: md ? parseInt(md, 10) : undefined,
-      },
+      ...(d || md
+        ? {
+            anything: {
+              ...(d ? { delay: parseInt(d, 10) } : {}),
+              ...(md ? { maxDelay: parseInt(md, 10) } : {}),
+            },
+          }
+        : {}),
     };
   });
