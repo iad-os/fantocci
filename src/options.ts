@@ -28,7 +28,7 @@ export const FantocciOptions = Type.Object(
           'If false disable HTTPS, if true certs will be generated automatically',
       }
     ),
-    anything: AnythingFantocciOptions,
+    anything: Type.Optional(AnythingFantocciOptions),
   },
   { additionalProperties: false }
 );

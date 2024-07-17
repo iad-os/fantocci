@@ -1,17 +1,18 @@
 import { TypeBoxTypeProvider } from '@fastify/type-provider-typebox';
 import { Static, Type } from '@sinclair/typebox';
 import { FastifyPluginAsync } from 'fastify';
-import { FantocciOptions } from '../options';
 
 export const AnythingFantocciOptions = Type.Object(
   {
     delay: Type.Number({
       minimum: 0,
       maximum: 1000 * 60 * 60 * 24 /*A Day*/,
+      default: 1,
     }),
     maxDelay: Type.Number({
       minimum: 1,
       maximum: 1000 * 60 * 60 * 24 /*A Day*/,
+      default: 1000 * 60 * 10,
     }),
   },
   { default: { delay: 1, maxDelay: 1000 * 60 * 10 } }
