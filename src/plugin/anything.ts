@@ -65,6 +65,7 @@ export const anythingFantocci: FastifyPluginAsync<AnythingFantocciOptions> =
                 Type.Number({
                   minimum: 100,
                   maximum: 1000,
+                  default: 200,
                   description: 'Status code of the response',
                 })
               ),
@@ -84,6 +85,7 @@ export const anythingFantocci: FastifyPluginAsync<AnythingFantocciOptions> =
                 Type.Number({
                   minimum: 100,
                   maximum: 1000,
+                  default: 200,
                   description: 'Status code of the response',
                 })
               ),
@@ -146,6 +148,7 @@ export const anythingFantocci: FastifyPluginAsync<AnythingFantocciOptions> =
                 Type.Number({
                   minimum: 100,
                   maximum: 1000,
+                  default: 200,
                   description: 'Status code of the response',
                 })
               ),
@@ -165,6 +168,7 @@ export const anythingFantocci: FastifyPluginAsync<AnythingFantocciOptions> =
                 Type.Number({
                   minimum: 100,
                   maximum: 1000,
+                  default: 200,
                   description: 'Status code of the response',
                 })
               ),
