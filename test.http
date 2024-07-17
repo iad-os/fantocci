@@ -81,10 +81,11 @@ token={{buildFakeToken.response.body.*}}
 ###
 # @name delay
 
-POST http://fantocci.lo.iad2.cloud:3000/anything?delay=3000 HTTP/1.1
+POST http://fantocci.lo.iad2.cloud:3000/anything?status=504 HTTP/1.1
 Host: {{host}}
 Content-Type: application/json
 Authorization: Basic clientId clientSecret
+Delay: 1500
 
 token={{buildFakeToken.response.body.*}}
 
@@ -92,10 +93,11 @@ token={{buildFakeToken.response.body.*}}
 ###
 # @name delay
 
-GET http://fantocci.lo.iad2.cloud:3000/anything/20000?delay=15000 HTTP/1.1
+POST http://fantocci.lo.iad2.cloud:3000/anything/20000?delay=15000 HTTP/1.1
 Host: {{host}}
 Content-Type: application/json
 Authorization: Basic clientId clientSecret
-Delay: 5000
+Delay: 1300
+Status: 403
 
 token={{buildFakeToken.response.body.*}}
