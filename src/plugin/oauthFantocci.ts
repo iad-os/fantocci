@@ -158,9 +158,54 @@ export const oauthFantocci: FastifyPluginAsync<OAuthFantocciOptions> =
             consumes: ['application/x-www-form-urlencoded'],
             produces: ['application/json'],
             security: [{ 'Basic Authentication': ['Basic Authentication'] }],
-            body: Type.Object({
-              token: Type.String(),
-            }),
+            body: Type.Object(
+              {
+                token: Type.String({
+                  description:
+                    'A valid JWT Access Token, use /_build_fake to generate one',
+                  examples: [
+                    buildFakeAccessToken(
+                      {
+                        iss: 'https://fantocci.iad2.cloud',
+                        exp: expiresIn(36000),
+                        aud: 'fake',
+                        sub: jwtId(),
+                        client_id: 'a-client-id',
+                        iat: issueNow(),
+                        jti: jwtId(),
+                      },
+                      {
+                        clientId: 'clientId',
+                        clientSecret: 'clientSecret',
+                        active: true,
+                        omit: [],
+                      }
+                    ),
+                  ],
+                }),
+              },
+              {
+                examples: [
+                  `token=${buildFakeAccessToken(
+                    {
+                      iss: 'https://fantocci.iad2.cloud',
+                      exp: expiresIn(36000),
+                      aud: 'fake',
+                      sub: jwtId(),
+                      client_id: 'a-client-id',
+                      iat: issueNow(),
+                      jti: jwtId(),
+                    },
+                    {
+                      clientId: 'clientId',
+                      clientSecret: 'clientSecret',
+                      active: true,
+                      omit: [],
+                    }
+                  )}`,
+                ],
+              }
+            ),
             response: {
               '200': Type.Object(
                 { active: Type.Boolean() },
