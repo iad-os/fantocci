@@ -276,6 +276,7 @@ export const oauthFantocci: FastifyPluginAsync<OAuthFantocciOptions> =
             return { message: 'token not provided' };
           }
           const token = bearerToken.split('Bearer')[1];
+          if(!token) return reply.status(400).send({ message: 'invalid token' });
           return JSON.parse(decodeToken(extractToken(token)));
         }
       );
@@ -283,6 +284,7 @@ export const oauthFantocci: FastifyPluginAsync<OAuthFantocciOptions> =
 
 export function extractToken(token: string): string {
   const [, payload] = token.split('.');
+  if(!payload) throw new Error('invalid token');
   return payload;
 }
 

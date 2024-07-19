@@ -1,6 +1,6 @@
 {
   "name": "@iad-os/fantocci",
-  "version": "0.3.3",
+  "version": "0.3.4",
   "description": "Http Testing Tool",
   "bin": {
     "@iad-os/fantocci": "./dist/.bin/cli.js"
@@ -56,6 +56,8 @@
   },
   "devDependencies": {
     "@mgcrea/pino-pretty-compact": "^1.3.0",
+    "@tsconfig/node20": "^20.1.4",
+    "@tsconfig/strictest": "^2.0.5",
     "@types/http-errors": "^2.0.4",
     "@types/lodash.omit": "^4.5.9",
     "@types/minimist": "^1.2.5",

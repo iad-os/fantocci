@@ -98,7 +98,12 @@
     "moduleResolution": "bundler",
     //"allowImportingTsExtensions": true,
     "resolveJsonModule": true,
+    "exactOptionalPropertyTypes": false
   },
+  "extends": [
+    "@tsconfig/node20/tsconfig.json",
+    "@tsconfig/strictest/tsconfig.json"
+  ],
   "include": [
     "./src/**/*.ts",
     "./src/.bin/*.ts",

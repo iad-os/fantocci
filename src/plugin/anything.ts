@@ -23,7 +23,7 @@ export type AnythingFantocciOptions = Static<typeof AnythingFantocciOptions>;
 export const anythingFantocci: FastifyPluginAsync<AnythingFantocciOptions> =
   async function (fastify, { maxDelay }) {
     fastify.removeAllContentTypeParsers();
-    fastify.addContentTypeParser('*', function (request, payload, done) {
+    fastify.addContentTypeParser('*', function (_, payload, done) {
       let data = '';
       payload.on('data', (chunk) => {
         data += chunk;

@@ -3,7 +3,7 @@ import { Static, Type } from '@sinclair/typebox';
 import { Simplify } from 'type-fest';
 import minimist from 'minimist';
 import { Value } from '@sinclair/typebox/value';
-import { AnythingFantocciOptions } from './plugin/anything';
+import { AnythingFantocciOptions } from './plugin/anything.js';
 
 export const FantocciOptions = Type.Object(
   {
@@ -41,19 +41,19 @@ export default ghii(FantocciOptions)
   })
   .loader(async () => {
     return {
-      port: process.env.PORT ? parseInt(process.env.PORT, 10) : undefined,
-      host: process.env.HOST,
+      port: process.env['PORT'] ? parseInt(process.env['PORT'], 10) : undefined,
+      host: process.env['HOST'],
     };
   })
   .loader(async () => {
-    if (process.env.ANYTHING_DELAY || process.env.ANYTHING_MAX_DELAY)
+    if (process.env['ANYTHING_DELAY'] || process.env['ANYTHING_MAX_DELAY'])
       return {
         anything: {
-          ...(process.env.ANYTHING_DELAY
-            ? { delay: parseInt(process.env.ANYTHING_DELAY, 10) }
+          ...(process.env['ANYTHING_DELAY']
+            ? { delay: parseInt(process.env['ANYTHING_DELAY'], 10) }
             : {}),
-          ...(process.env.ANYTHING_MAX_DELAY
-            ? { maxDelay: parseInt(process.env.ANYTHING_MAX_DELAY, 10) }
+          ...(process.env['ANYTHING_MAX_DELAY']
+            ? { maxDelay: parseInt(process.env['ANYTHING_MAX_DELAY'], 10) }
             : {}),
         },
       };
