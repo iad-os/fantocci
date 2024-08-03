@@ -1,6 +1,6 @@
 {
   "name": "@iad-os/fantocci",
-  "version": "0.4.0",
+  "version": "0.4.1",
   "description": "Http Testing Tool",
   "bin": {
     "@iad-os/fantocci": "./dist/.bin/cli.js"
@@ -80,9 +80,7 @@
     "ts-node-dev": "^2.0.0",
     "tsx": "^4.16.5",
     "typescript": "^5.5.4",
-    "vitest": "^1.6.0"
-  },
-  "optionalDependencies": {
+    "vitest": "^1.6.0",
     "@scalar/api-reference": "^1.24.68"
   }
 }

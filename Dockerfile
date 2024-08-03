@@ -1,25 +1,24 @@
-#ARG NODE_VERSION=20
 ARG FINAL_IMAGE=node:20-alpine
 # ARG BASE_IMAGE=gcr.io/distroless/nodejs
 ARG BUIL_IMAGE=node:20-alpine
-ARG USER=node
+
 
 # Stage-1 prod dependencies
-FROM ${BUIL_IMAGE} as prod-dependencies
+FROM ${BUIL_IMAGE} AS prod-dependencies
 WORKDIR /app
 COPY package*.json ./
 RUN npm ci --omit=dev
 
-FROM ${BUIL_IMAGE} as build
+FROM ${BUIL_IMAGE} AS build
 WORKDIR /app
 COPY . .
 RUN npm ci \
   && npm run test:run \
   && npm run build
 
-
 # Stage: image create final image
 FROM ${FINAL_IMAGE}
+ARG USER=node
 # Create app directory
 WORKDIR /app
 COPY --chown=${USER}:${USER} --from=build /app/dist ./dist
