@@ -6,9 +6,10 @@ import fastify from 'fastify';
 import { createCertificate } from './certUtils.js';
 import { FantocciOptions } from './options.js';
 import { anythingFantocci } from './plugin/anything.js';
-import { oauthFantocci } from './plugin/oauthFantocci.js';
+import { oauthFantocci } from './plugin/oauth/oauth.js';
+import { oidcFantocci } from './plugin/oidc/oidc.js';
 
-export async function Fantocci({ https, anything }: FantocciOptions) {
+export async function Fantocci({ https, anything, oidc }: FantocciOptions) {
   let certs: Awaited<ReturnType<typeof createCertificate>> | undefined =
     undefined;
   if (https) {
@@ -75,8 +76,14 @@ export async function Fantocci({ https, anything }: FantocciOptions) {
       routePrefix: '/ui',
     });
 
+  await fantocci.register(oauthFantocci, { prefix: '/oauth' });
+  if (oidc) {
+    await fantocci.register(oidcFantocci, {
+      prefix: '/oidc',
+      ...oidc,
+    });
+  }
   await fantocci
-    .register(oauthFantocci, { prefix: '/oauth' })
     .register(anythingFantocci, {
       prefix: '/anything',
       maxDelay: anything.maxDelay,

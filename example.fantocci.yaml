@@ -1,0 +1,20 @@
+# Remove double quote to validate against json schema (vscode extension redhat.vscode-yaml is required)
+# I you want to express only a partial configuration, ## (double hash) following line.
+# yaml-language-server: $schema=./fantocci.schema.json
+
+port: 3000
+host: '0.0.0.0'
+https: false
+anything:
+  delay: 1
+  maxDelay: 600000
+# DISABLE OIDC ENDPOINT
+# oidc: false
+
+# ENABLE OIDC ENDPOINT
+oidc:
+  issuer: https://issuer.com
+  discovery: https://issuer.com/.well-known/openid-configuration
+  clientId: application
+  clientSecret: aClientSecret
+  tokenHeader: 'x-auth-token'

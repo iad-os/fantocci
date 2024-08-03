@@ -4,6 +4,8 @@ import { Simplify } from 'type-fest';
 import minimist from 'minimist';
 import { Value } from '@sinclair/typebox/value';
 import { AnythingFantocciOptions } from './plugin/anything.js';
+import { OIDCFantocciOptions } from './plugin/oidc/oidc.js';
+import { yamlLoader } from '@ghii/yaml-loader';
 
 export const FantocciOptions = Type.Object(
   {
@@ -29,6 +31,9 @@ export const FantocciOptions = Type.Object(
       }
     ),
     anything: AnythingFantocciOptions,
+    oidc: Type.Union([OIDCFantocciOptions, Type.Literal(false)], {
+      default: false,
+    }),
   },
   { additionalProperties: false }
 );
@@ -60,6 +65,35 @@ export default ghii(FantocciOptions)
     return {};
   })
   .loader(async () => {
+    const issuer = process.env['OIDC_ISSUER'];
+    const clientId = process.env['OIDC_CLIENT_ID'];
+    const clientSecret = process.env['OIDC_CLIENT_SECRET'];
+    const discovery = process.env['OIDC_DISCOVERY'];
+    if (issuer || clientId || clientSecret || discovery) {
+      return {
+        oidc: {
+          issuer,
+          clientId,
+          clientSecret,
+          discovery,
+        },
+      };
+    }
+    return {};
+  })
+  .loader(async () => {
+    return {
+      anything: {
+        ...(process.env['ANYTHING_DELAY']
+          ? { delay: parseInt(process.env['ANYTHING_DELAY'], 10) }
+          : {}),
+        ...(process.env['ANYTHING_MAX_DELAY']
+          ? { maxDelay: parseInt(process.env['ANYTHING_MAX_DELAY'], 10) }
+          : {}),
+      },
+    };
+  })
+  .loader(async () => {
     const { _, p, h, cn, d, md } = minimist(process.argv.slice(2), {
       alias: {
         p: 'port',
@@ -82,4 +116,10 @@ export default ghii(FantocciOptions)
           }
         : {}),
     };
-  });
+  })
+  .loader(
+    yamlLoader(
+      { throwOnError: false, logger: (err, msg) => console.error(err, msg) },
+      'fantocci.yaml'
+    )
+  );

@@ -33,3 +33,4 @@ coverage/lcov-report/src/zones/model.ts.html
 dist
 
 .env
+fantocci.yaml
