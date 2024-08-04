@@ -93,6 +93,12 @@ export default ghii(FantocciOptions)
       },
     };
   })
+  .loader(
+    yamlLoader(
+      { throwOnError: false, logger: (err, msg) => console.error(err, msg) },
+      process.env['FANTOCCI_CONFIG'] ?? 'fantocci.yaml'
+    )
+  )
   .loader(async () => {
     const { _, p, h, cn, d, md } = minimist(process.argv.slice(2), {
       alias: {
@@ -116,10 +122,4 @@ export default ghii(FantocciOptions)
           }
         : {}),
     };
-  })
-  .loader(
-    yamlLoader(
-      { throwOnError: false, logger: (err, msg) => console.error(err, msg) },
-      'fantocci.yaml'
-    )
-  );
+  });
