@@ -191,9 +191,11 @@ function getToken(
       return;
     rawToken = tokenHeaderValue;
   }
-  if (!headers['authorization']) return;
-  if (typeof headers['authorization'] !== 'string') return;
-  rawToken = headers['authorization'].split('Bearer')[1];
+  if (!rawToken) {
+    if (!headers['authorization']) return;
+    if (typeof headers['authorization'] !== 'string') return;
+    rawToken = headers['authorization'].split('Bearer')[1];
+  }
   if (!rawToken) return;
   return { raw: rawToken, token: jwtDecode(rawToken) };
 }

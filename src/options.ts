@@ -69,6 +69,8 @@ export default ghii(FantocciOptions)
     const clientId = process.env['OIDC_CLIENT_ID'];
     const clientSecret = process.env['OIDC_CLIENT_SECRET'];
     const discovery = process.env['OIDC_DISCOVERY'];
+    const tokenHeader = process.env['OIDC_TOKEN_HEADER'];
+    const prefix = process.env['OIDC_PREFIX'];
     if (issuer || clientId || clientSecret || discovery) {
       return {
         oidc: {
@@ -76,6 +78,8 @@ export default ghii(FantocciOptions)
           clientId,
           clientSecret,
           discovery,
+          tokenHeader,
+          prefix,
         },
       };
     }
