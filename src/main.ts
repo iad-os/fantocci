@@ -3,6 +3,8 @@ import { Fantocci } from './Fantocci.js';
 import { normalizePort } from './normalizePort.js';
 import { FantocciOptions } from './options.js';
 export * from './plugin/oauth/oauth.js';
+export * from './plugin/oauth/oauth.types.js';
+export * from './plugin/oauth/oauth.utils.js';
 export { Fantocci };
 dotenv.config();
 

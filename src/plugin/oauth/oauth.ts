@@ -10,10 +10,10 @@ import {
   decodeToken,
   expiresIn,
   extractToken,
-  FakeAccessToken,
   issueNow,
   jwtId,
-} from './oauth.types.js';
+} from './oauth.utils.js';
+import { FakeAccessToken } from './oauth.types.js';
 
 export const OAuthFantocciOptions = Type.Object({
   prefix: Type.String({ pattern: '/S+' }),
