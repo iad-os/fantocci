@@ -1,6 +1,6 @@
 import { Static, Type } from '@sinclair/typebox';
 import { Simplify } from 'type-fest';
-import { expiresIn, issueNow } from './oauth.utils';
+import { expiresIn, issueNow } from './oauth.utils.js';
 
 export const AccessTokenLikeRFC9068 = Type.Object({
   //https://datatracker.ietf.org/doc/html/rfc9068#section-2.2
