@@ -2,16 +2,18 @@ import { fastify } from 'fastify';
 import { describe, expect, it } from 'vitest';
 
 import {
-  buildFakeAccessToken,
-  buildToken,
-  expireIn60,
   FakeAccessToken,
   FantocciFakerProps,
-  issueNow,
-  jwtId,
 } from '../plugin/oauth/oauth.types.js';
 
 import { oauthFantocci } from '../plugin/oauth/oauth.js';
+import {
+  expireIn60,
+  issueNow,
+  jwtId,
+  buildToken,
+  buildFakeAccessToken,
+} from '../plugin/oauth/oauth.utils.js';
 
 describe('OAuth2 Test Suite', () => {
   const fantocci = fastify({ logger: { level: 'debug' } }).register(
