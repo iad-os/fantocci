@@ -1,5 +1,5 @@
-import { nanoid } from "nanoid";
-import { AccessTokenLikeRFC9068, FantocciFakerProps } from "./oauth.types";
+import { nanoid } from 'nanoid';
+import type { AccessTokenLikeRFC9068, FantocciFakerProps } from './oauth.types';
 
 export function extractToken(token: string): string {
   const [, payload] = token.split('.');

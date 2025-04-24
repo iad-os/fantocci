@@ -1,24 +1,13 @@
 import { fastify } from 'fastify';
 import { describe, expect, it } from 'vitest';
 
-import {
-  FakeAccessToken,
-  FantocciFakerProps,
-} from '../plugin/oauth/oauth.types.js';
+import type { FakeAccessToken, FantocciFakerProps } from '../plugin/oauth/oauth.types.js';
 
 import { oauthFantocci } from '../plugin/oauth/oauth.js';
-import {
-  expireIn60,
-  issueNow,
-  jwtId,
-  buildToken,
-  buildFakeAccessToken,
-} from '../plugin/oauth/oauth.utils.js';
+import { expireIn60, issueNow, jwtId, buildToken, buildFakeAccessToken } from '../plugin/oauth/oauth.utils.js';
 
 describe('OAuth2 Test Suite', () => {
-  const fantocci = fastify({ logger: { level: 'debug' } }).register(
-    oauthFantocci
-  );
+  const fantocci = fastify({ logger: { level: 'debug' } }).register(oauthFantocci);
 
   it('build fake token', async () => {
     const aValidPayload: FakeAccessToken = {
@@ -69,9 +58,7 @@ describe('OAuth2 Test Suite', () => {
       headers: {
         host: 'myhost',
         'content-type': 'application/x-www-form-urlencoded',
-        authorization: `Basic ${Buffer.from(
-          `${fakerConf.clientId}:${fakerConf.clientSecret}`
-        ).toString('base64')}`,
+        authorization: `Basic ${Buffer.from(`${fakerConf.clientId}:${fakerConf.clientSecret}`).toString('base64')}`,
       },
       payload: `token=${token}`,
     });
@@ -102,9 +89,7 @@ describe('OAuth2 Test Suite', () => {
       headers: {
         host: 'not.myhost',
         'content-type': 'application/x-www-form-urlencoded',
-        authorization: `Basic ${Buffer.from(
-          `${fakerConf.clientId}:${fakerConf.clientSecret}`
-        ).toString('base64')}`,
+        authorization: `Basic ${Buffer.from(`${fakerConf.clientId}:${fakerConf.clientSecret}`).toString('base64')}`,
       },
       payload: `token=${token}`,
     });
@@ -137,9 +122,7 @@ describe('OAuth2 Test Suite', () => {
       headers: {
         host: 'not.myhost',
         'content-type': 'application/x-www-form-urlencoded',
-        authorization: `Basic ${Buffer.from(
-          `not${fakerConf.clientId}:${fakerConf.clientSecret}`
-        ).toString('base64')}`,
+        authorization: `Basic ${Buffer.from(`not${fakerConf.clientId}:${fakerConf.clientSecret}`).toString('base64')}`,
       },
       payload: `token=${token}`,
     });
@@ -169,9 +152,7 @@ describe('OAuth2 Test Suite', () => {
       headers: {
         host: 'not.myhost',
         'content-type': 'application/x-www-form-urlencoded',
-        authorization: `Basic ${Buffer.from(
-          `${fakerConf.clientId}:not${fakerConf.clientSecret}`
-        ).toString('base64')}`,
+        authorization: `Basic ${Buffer.from(`${fakerConf.clientId}:not${fakerConf.clientSecret}`).toString('base64')}`,
       },
       payload: `token=${token}`,
     });
@@ -203,9 +184,7 @@ describe('OAuth2 Test Suite', () => {
       headers: {
         host: 'myhost',
         'content-type': 'application/x-www-form-urlencoded',
-        authorization: `Basic ${Buffer.from(
-          `${fakerConf.clientId}:${fakerConf.clientSecret}`
-        ).toString('base64')}`,
+        authorization: `Basic ${Buffer.from(`${fakerConf.clientId}:${fakerConf.clientSecret}`).toString('base64')}`,
       },
       payload: `token=${token}`,
     });

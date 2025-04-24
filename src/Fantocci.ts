@@ -1,17 +1,16 @@
 import fastifySwagger from '@fastify/swagger';
-import { TypeBoxTypeProvider } from '@fastify/type-provider-typebox';
-import { type ReferenceConfiguration } from '@scalar/api-reference';
+import type { TypeBoxTypeProvider } from '@fastify/type-provider-typebox';
+import type { ReferenceConfiguration } from '@scalar/api-reference';
 import apiReference from '@scalar/fastify-api-reference';
 import fastify from 'fastify';
 import { createCertificate } from './certUtils.js';
-import { FantocciOptions } from './options.js';
+import type { FantocciOptions } from './options.js';
 import { anythingFantocci } from './plugin/anything.js';
 import { oauthFantocci } from './plugin/oauth/oauth.js';
 import { oidcFantocci } from './plugin/oidc/oidc.js';
 
 export async function Fantocci({ https, anything, oidc }: FantocciOptions) {
-  let certs: Awaited<ReturnType<typeof createCertificate>> | undefined =
-    undefined;
+  let certs: Awaited<ReturnType<typeof createCertificate>> | undefined = undefined;
   if (https) {
     certs = await createCertificate({
       cert: {

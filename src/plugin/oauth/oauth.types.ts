@@ -1,5 +1,5 @@
-import { Static, Type } from '@sinclair/typebox';
-import { Simplify } from 'type-fest';
+import { type Static, Type } from '@sinclair/typebox';
+import type { Simplify } from 'type-fest';
 import { expiresIn, issueNow } from './oauth.utils.js';
 
 export const AccessTokenLikeRFC9068 = Type.Object({
@@ -108,11 +108,7 @@ export const FantocciFakerProps = Type.Object({
   active: Type.Boolean({
     description: 'Is the token still active',
   }),
-  omit: Type.Optional(
-    Type.Array(
-      Type.Exclude(Type.KeyOf(AccessTokenLikeRFC9068), Type.Literal('active'))
-    )
-  ),
+  omit: Type.Optional(Type.Array(Type.Exclude(Type.KeyOf(AccessTokenLikeRFC9068), Type.Literal('active')))),
 });
 
 export type AccessTokenLikeRFC9068 = Static<typeof AccessTokenLikeRFC9068>;
@@ -130,7 +126,4 @@ export const FakeAccessToken = Type.Intersect([
   ),
 ]);
 
-export type FakeAccessToken = Simplify<
-  Static<typeof FakeAccessToken> & { [key: string]: unknown }
->;
-
+export type FakeAccessToken = Simplify<Static<typeof FakeAccessToken> & { [key: string]: unknown }>;

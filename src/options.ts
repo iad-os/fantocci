@@ -1,6 +1,6 @@
 import ghii from '@ghii/ghii-es';
-import { Static, Type } from '@sinclair/typebox';
-import { Simplify } from 'type-fest';
+import { type Static, Type } from '@sinclair/typebox';
+import type { Simplify } from 'type-fest';
 import minimist from 'minimist';
 import { Value } from '@sinclair/typebox/value';
 import { AnythingFantocciOptions } from './plugin/anything.js';
@@ -19,15 +19,13 @@ export const FantocciOptions = Type.Object(
     https: Type.Union(
       [
         Type.String({
-          description:
-            'Comma separated Common names for the certificate, e.g. "localhost',
+          description: 'Comma separated Common names for the certificate, e.g. "localhost',
         }),
         Type.Literal(false),
       ],
       {
         default: false,
-        description:
-          'If false disable HTTPS, if true certs will be generated automatically',
+        description: 'If false disable HTTPS, if true certs will be generated automatically',
       }
     ),
     anything: AnythingFantocciOptions,
@@ -46,7 +44,7 @@ export default ghii(FantocciOptions)
   })
   .loader(async () => {
     return {
-      port: process.env['PORT'] ? parseInt(process.env['PORT'], 10) : undefined,
+      port: process.env['PORT'] ? Number.parseInt(process.env['PORT'], 10) : undefined,
       host: process.env['HOST'],
     };
   })
@@ -54,11 +52,9 @@ export default ghii(FantocciOptions)
     if (process.env['ANYTHING_DELAY'] || process.env['ANYTHING_MAX_DELAY'])
       return {
         anything: {
-          ...(process.env['ANYTHING_DELAY']
-            ? { delay: parseInt(process.env['ANYTHING_DELAY'], 10) }
-            : {}),
+          ...(process.env['ANYTHING_DELAY'] ? { delay: Number.parseInt(process.env['ANYTHING_DELAY'], 10) } : {}),
           ...(process.env['ANYTHING_MAX_DELAY']
-            ? { maxDelay: parseInt(process.env['ANYTHING_MAX_DELAY'], 10) }
+            ? { maxDelay: Number.parseInt(process.env['ANYTHING_MAX_DELAY'], 10) }
             : {}),
         },
       };
@@ -88,11 +84,9 @@ export default ghii(FantocciOptions)
   .loader(async () => {
     return {
       anything: {
-        ...(process.env['ANYTHING_DELAY']
-          ? { delay: parseInt(process.env['ANYTHING_DELAY'], 10) }
-          : {}),
+        ...(process.env['ANYTHING_DELAY'] ? { delay: Number.parseInt(process.env['ANYTHING_DELAY'], 10) } : {}),
         ...(process.env['ANYTHING_MAX_DELAY']
-          ? { maxDelay: parseInt(process.env['ANYTHING_MAX_DELAY'], 10) }
+          ? { maxDelay: Number.parseInt(process.env['ANYTHING_MAX_DELAY'], 10) }
           : {}),
       },
     };
@@ -120,8 +114,8 @@ export default ghii(FantocciOptions)
       ...(d || md
         ? {
             anything: {
-              ...(d ? { delay: parseInt(d, 10) } : {}),
-              ...(md ? { maxDelay: parseInt(md, 10) } : {}),
+              ...(d ? { delay: Number.parseInt(d, 10) } : {}),
+              ...(md ? { maxDelay: Number.parseInt(md, 10) } : {}),
             },
           }
         : {}),

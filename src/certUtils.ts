@@ -1,9 +1,4 @@
-import {
-  CertificateAuthorityOptions,
-  CertificateOptions,
-  createCA,
-  createCert,
-} from 'mkcert';
+import { type CertificateAuthorityOptions, type CertificateOptions, createCA, createCert } from 'mkcert';
 
 export async function createCertificate({
   ca = {
