@@ -1,6 +1,6 @@
-ARG FINAL_IMAGE=node:20-alpine
+ARG FINAL_IMAGE=node:22-alpine
 # ARG BASE_IMAGE=gcr.io/distroless/nodejs
-ARG BUIL_IMAGE=node:20-alpine
+ARG BUIL_IMAGE=node:22-alpine
 
 
 # Stage-1 prod dependencies

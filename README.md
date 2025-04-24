@@ -10,7 +10,7 @@ Inpired by httpbin, Fantocci HTTP Test Server is a TypeScript-based HTTP server 
 
 ## Prerequisites
 
-- Node.js (version 20)
+- Node.js (version 22)
 - Docker
 
 ## Installation

@@ -13,7 +13,7 @@ jobs:
     - name: 'Setup node'
       uses: actions/setup-node@v4
       with:
-        node-version: 20
+        node-version: 22
     - name: 'install deps'
       run: npm ci --no-audit
     - run: npm run lint --if-present
@@ -32,7 +32,7 @@ jobs:
       - name: 'Setup node'
         uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 22
           registry-url: https://registry.npmjs.org
 
       - name: install deps, tests and build
