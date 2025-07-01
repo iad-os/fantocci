@@ -99,7 +99,7 @@ export const oauthFantocci: FastifyPluginAsync<OAuthFantocciOptions> = async (fa
           return reply.status(401).send({ message: 'Unauthorized' });
         }
 
-        if (new URL(fakeToken.iss).host !== request.hostname) {
+        if (new URL(fakeToken.iss).host !== request.host) {
           return reply.send({ active: false });
         }
 

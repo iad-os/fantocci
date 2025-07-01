@@ -1,6 +1,6 @@
 {
   "name": "@iad-os/fantocci",
-  "version": "0.5.0",
+  "version": "0.5.1",
   "description": "Http Testing Tool",
   "bin": {
     "@iad-os/fantocci": "./dist/.bin/cli.js"
@@ -70,6 +70,6 @@
     "rimraf": "^6.0.1",
     "tsx": "^4.19.3",
     "typescript": "^5.8.3",
-    "vitest": "^3.1.2"
+    "vitest": "^3.2.4"
   }
 }
