@@ -100,6 +100,14 @@ export default ghii(FantocciOptions)
     )
   )
   .loader(async () => {
+    return {
+      colors: {
+        title: process.env['COLORS_TITLE'],
+        description: process.env['COLORS_DESCRIPTION'],
+      },
+    };
+  })
+  .loader(async () => {
     const { _, p, h, cn, d, md } = minimist(process.argv.slice(2), {
       alias: {
         p: 'port',
