@@ -1,6 +1,6 @@
 {
   "name": "@iad-os/fantocci",
-  "version": "0.6.0",
+  "version": "0.6.1",
   "description": "Http Testing Tool",
   "bin": {
     "@iad-os/fantocci": "./dist/.bin/cli.js"
@@ -8,7 +8,7 @@
   "type": "module",
   "scripts": {
     "dev": "tsx watch --inspect src/index.ts | pino-pretty-compact",
-    "update-schema": "tsx watch --inspect src/index.ts --schema",
+    "update-schema": "tsx --inspect src/index.ts --schema",
     "start": "tsx src/index.ts  | pino-pretty-compact",
     "test": "vitest",
     "test:run": "vitest run",

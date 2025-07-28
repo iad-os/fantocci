@@ -2,24 +2,75 @@
   "additionalProperties": false,
   "type": "object",
   "properties": {
-    "port": { "default": 3000, "description": "Port to listen on", "minimum": 0, "maximum": 65535, "type": "number" },
-    "host": { "default": "0.0.0.0", "description": "Host to listen on", "type": "string" },
+    "port": {
+      "default": 3000,
+      "description": "Port to listen on",
+      "minimum": 0,
+      "maximum": 65535,
+      "type": "number"
+    },
+    "host": {
+      "default": "0.0.0.0",
+      "description": "Host to listen on",
+      "type": "string"
+    },
     "https": {
       "default": false,
       "description": "If false disable HTTPS, if true certs will be generated automatically",
       "anyOf": [
-        { "description": "Comma separated Common names for the certificate, e.g. \"localhost", "type": "string" },
-        { "const": false, "type": "boolean" }
+        {
+          "description": "Comma separated Common names for the certificate, e.g. \"localhost",
+          "type": "string"
+        },
+        {
+          "const": false,
+          "type": "boolean"
+        }
       ]
     },
     "anything": {
-      "default": { "delay": 1, "maxDelay": 600000 },
+      "default": {
+        "delay": 1,
+        "maxDelay": 600000
+      },
       "type": "object",
       "properties": {
-        "delay": { "minimum": 0, "maximum": 86400000, "default": 1, "type": "number" },
-        "maxDelay": { "minimum": 1, "maximum": 86400000, "default": 600000, "type": "number" }
+        "delay": {
+          "minimum": 0,
+          "maximum": 86400000,
+          "default": 1,
+          "type": "number"
+        },
+        "maxDelay": {
+          "minimum": 1,
+          "maximum": 86400000,
+          "default": 600000,
+          "type": "number"
+        }
       },
-      "required": ["delay", "maxDelay"]
+      "required": [
+        "delay",
+        "maxDelay"
+      ]
+    },
+    "colors": {
+      "type": "object",
+      "properties": {
+        "title": {
+          "default": "Colors",
+          "description": "Title of the colors plugin",
+          "type": "string"
+        },
+        "description": {
+          "default": "This is a colors plugin",
+          "description": "Description of the colors plugin",
+          "type": "string"
+        }
+      },
+      "required": [
+        "title",
+        "description"
+      ]
     },
     "oidc": {
       "default": false,
@@ -27,18 +78,47 @@
         {
           "type": "object",
           "properties": {
-            "prefix": { "pattern": "/S+", "type": "string" },
-            "tokenHeader": { "type": "string" },
-            "issuer": { "format": "uri", "type": "string" },
-            "clientId": { "type": "string" },
-            "clientSecret": { "type": "string" },
-            "discovery": { "format": "uri", "type": "string" }
+            "prefix": {
+              "pattern": "/S+",
+              "type": "string"
+            },
+            "tokenHeader": {
+              "type": "string"
+            },
+            "issuer": {
+              "format": "uri",
+              "type": "string"
+            },
+            "clientId": {
+              "type": "string"
+            },
+            "clientSecret": {
+              "type": "string"
+            },
+            "discovery": {
+              "format": "uri",
+              "type": "string"
+            }
           },
-          "required": ["issuer", "clientId", "clientSecret"]
+          "required": [
+            "issuer",
+            "clientId",
+            "clientSecret"
+          ]
         },
-        { "const": false, "type": "boolean" }
+        {
+          "const": false,
+          "type": "boolean"
+        }
       ]
     }
   },
-  "required": ["port", "host", "https", "anything", "oidc"]
+  "required": [
+    "port",
+    "host",
+    "https",
+    "anything",
+    "colors",
+    "oidc"
+  ]
 }

@@ -3,8 +3,8 @@
 # yaml-language-server: $schema=./fantocci.schema.json
 
 port: 3000
-host: '0.0.0.0'
-https: false
+host: "0.0.0.0"
+https: "false"
 anything:
   delay: 1
   maxDelay: 600000
@@ -17,4 +17,7 @@ oidc:
   discovery: https://issuer.com/.well-known/openid-configuration
   clientId: application
   clientSecret: aClientSecret
-  tokenHeader: 'x-auth-token'
+  tokenHeader: "x-auth-token"
+colors:
+  title: "Colors"
+  description: "This is a colors plugin"

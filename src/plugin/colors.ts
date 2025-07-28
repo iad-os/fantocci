@@ -1,5 +1,19 @@
+import { Static, Type } from '@sinclair/typebox';
 import type { FastifyPluginAsync } from 'fastify';
 
+
+export const ColorsFantocciOptions = Type.Object({
+  title: Type.String({
+    default: 'Colors',
+    description: 'Title of the colors plugin',
+  }),
+  description: Type.String({
+    default: 'This is a colors plugin',
+    description: 'Description of the colors plugin',
+  }),
+})
+
+export type ColorsFantocciOptions = Static<typeof ColorsFantocciOptions>;
 
 const colorsHtmlRespone = (color: string, title: string, text: string) => `
 <!DOCTYPE html>
@@ -9,7 +23,7 @@ const colorsHtmlRespone = (color: string, title: string, text: string) => `
   <title>${title}</title>
   <style>
     body {
-      background: #f9f9f9;
+      background: ${color};
       font-family: Arial, sans-serif;
       display: flex;
       flex-direction: column;
@@ -44,7 +58,7 @@ const colorsHtmlRespone = (color: string, title: string, text: string) => `
 </body>
 </html>
 `;
-export const colorsFantocci: FastifyPluginAsync = async (fastify) => {
+export const colorsFantocci: FastifyPluginAsync<ColorsFantocciOptions> = async (fastify, { title, description }) => {
   fastify.removeAllContentTypeParsers();
   fastify.addContentTypeParser('*', (_, payload, done) => {
     let data = '';
@@ -63,7 +77,7 @@ export const colorsFantocci: FastifyPluginAsync = async (fastify) => {
       }
     }, async (_, reply) => {
       reply.header('Content-Type', 'text/html');
-      reply.send(colorsHtmlRespone('red', 'Red', 'Red'));
+      reply.send(colorsHtmlRespone('red', title, description));
     })
     .all('/blue', {
       schema: {
@@ -71,7 +85,7 @@ export const colorsFantocci: FastifyPluginAsync = async (fastify) => {
       }
     }, async (_, reply) => {
       reply.header('Content-Type', 'text/html');
-      reply.send(colorsHtmlRespone('blue', 'Blue', 'Blue'));
+      reply.send(colorsHtmlRespone('blue', title, description));
     })
     .all('/green', {
       schema: {
@@ -79,7 +93,7 @@ export const colorsFantocci: FastifyPluginAsync = async (fastify) => {
       }
     }, async (_, reply) => {
       reply.header('Content-Type', 'text/html');
-      reply.send(colorsHtmlRespone('green', 'Green', 'Green'));
+      reply.send(colorsHtmlRespone('green', title, description));
     })
     .all('/yellow', {
       schema: {
@@ -87,7 +101,7 @@ export const colorsFantocci: FastifyPluginAsync = async (fastify) => {
       }
     }, async (_, reply) => {
       reply.header('Content-Type', 'text/html');
-      reply.send(colorsHtmlRespone('yellow', 'Yellow', 'Yellow'));
+      reply.send(colorsHtmlRespone('yellow', title, description));
     })
     .all('/purple', {
       schema: {
@@ -95,7 +109,7 @@ export const colorsFantocci: FastifyPluginAsync = async (fastify) => {
       }
     }, async (_, reply) => {
       reply.header('Content-Type', 'text/html');
-      reply.send(colorsHtmlRespone('purple', 'Purple', 'Purple'));
+      reply.send(colorsHtmlRespone('purple', title, description));
     })
     .all('/orange', {
       schema: {
@@ -103,7 +117,7 @@ export const colorsFantocci: FastifyPluginAsync = async (fastify) => {
       }
     }, async (_, reply) => {
       reply.header('Content-Type', 'text/html');
-      reply.send(colorsHtmlRespone('orange', 'Orange', 'Orange'));
+      reply.send(colorsHtmlRespone('orange', title, description));
     })
     .all('/pink', {
       schema: {
@@ -111,6 +125,6 @@ export const colorsFantocci: FastifyPluginAsync = async (fastify) => {
       }
     }, async (_, reply) => {
       reply.header('Content-Type', 'text/html');
-      reply.send(colorsHtmlRespone('pink', 'Pink', 'Pink'));
+      reply.send(colorsHtmlRespone('pink', title, description));
     });
 };

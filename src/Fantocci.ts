@@ -8,8 +8,9 @@ import type { FantocciOptions } from './options.js';
 import { anythingFantocci } from './plugin/anything.js';
 import { oauthFantocci } from './plugin/oauth/oauth.js';
 import { oidcFantocci } from './plugin/oidc/oidc.js';
+import { colorsFantocci } from './plugin/colors.js';
 
-export async function Fantocci({ https, anything, oidc }: FantocciOptions) {
+export async function Fantocci({ https, anything, oidc, colors }: FantocciOptions) {
   let certs: Awaited<ReturnType<typeof createCertificate>> | undefined = undefined;
   if (https) {
     certs = await createCertificate({
@@ -26,14 +27,14 @@ export async function Fantocci({ https, anything, oidc }: FantocciOptions) {
     logger: { level: 'debug' },
     ...(certs
       ? {
-          http2: true,
-          https: {
-            allowHTTP1: true, // f
-            ca: certs.ca.cert,
-            key: certs.certs.key,
-            cert: certs.certs.cert,
-          },
-        }
+        http2: true,
+        https: {
+          allowHTTP1: true, // f
+          ca: certs.ca.cert,
+          key: certs.certs.key,
+          cert: certs.certs.cert,
+        },
+      }
       : {}),
   }).withTypeProvider<TypeBoxTypeProvider>();
 
@@ -88,7 +89,10 @@ export async function Fantocci({ https, anything, oidc }: FantocciOptions) {
       maxDelay: anything.maxDelay,
       delay: anything.delay,
     })
-
+    .register(colorsFantocci, {
+      title: colors.title,
+      description: colors.description,
+    })
     .route({
       method: ['GET'],
       url: '/',

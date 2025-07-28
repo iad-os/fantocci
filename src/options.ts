@@ -6,6 +6,7 @@ import { Value } from '@sinclair/typebox/value';
 import { AnythingFantocciOptions } from './plugin/anything.js';
 import { OIDCFantocciOptions } from './plugin/oidc/oidc.js';
 import { yamlLoader } from '@ghii/yaml-loader';
+import { ColorsFantocciOptions } from './plugin/colors.js';
 
 export const FantocciOptions = Type.Object(
   {
@@ -29,6 +30,7 @@ export const FantocciOptions = Type.Object(
       }
     ),
     anything: AnythingFantocciOptions,
+    colors: ColorsFantocciOptions,
     oidc: Type.Union([OIDCFantocciOptions, Type.Literal(false)], {
       default: false,
     }),

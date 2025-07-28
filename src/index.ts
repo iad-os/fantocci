@@ -1,10 +1,10 @@
 import fs from 'node:fs';
-import options from './options.js';
+import options, { FantocciOptions } from './options.js';
 import { resolve } from 'node:path';
 
 if (process.argv.includes('--schema')) {
   const out = process.argv[process.argv.indexOf('--schema') + 1] ?? 'fantocci.schema.json';
-  fs.writeFileSync(resolve(out), options.jsonSchema());
+  fs.writeFileSync(resolve(out), JSON.stringify(FantocciOptions, null, 2));
   console.log(`Schema written to ${out}`);
 } else {
   (async () => {
