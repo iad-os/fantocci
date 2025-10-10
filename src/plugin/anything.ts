@@ -64,7 +64,6 @@ export const anythingFantocci: FastifyPluginAsync<AnythingFantocciOptions> = asy
               Type.Number({
                 minimum: 100,
                 maximum: 1000,
-                default: 200,
                 description: 'Status code of the response',
               })
             ),
@@ -84,7 +83,6 @@ export const anythingFantocci: FastifyPluginAsync<AnythingFantocciOptions> = asy
               Type.Number({
                 minimum: 100,
                 maximum: 1000,
-                default: 200,
                 description: 'Status code of the response',
               })
             ),
@@ -102,7 +100,7 @@ export const anythingFantocci: FastifyPluginAsync<AnythingFantocciOptions> = asy
           req.query.delay
         );
         setTimeout(async () => {
-          await reply.status(req.headers['status'] ?? req.query.status ?? 200).send({
+          await reply.status(req.headers['status'] ?? req.query?.status ?? 200).send({
             headers: req.headers,
             params: req.params,
             body: req.body,
@@ -145,7 +143,6 @@ export const anythingFantocci: FastifyPluginAsync<AnythingFantocciOptions> = asy
               Type.Number({
                 minimum: 100,
                 maximum: 1000,
-                default: 200,
                 description: 'Status code of the response',
               })
             ),
@@ -165,7 +162,6 @@ export const anythingFantocci: FastifyPluginAsync<AnythingFantocciOptions> = asy
               Type.Number({
                 minimum: 100,
                 maximum: 1000,
-                default: 200,
                 description: 'Status code of the response',
               })
             ),
@@ -183,7 +179,7 @@ export const anythingFantocci: FastifyPluginAsync<AnythingFantocciOptions> = asy
           req.query.delay
         );
         setTimeout(async () => {
-          await reply.status(req.headers['status'] ?? req.query.status ?? 200).send({
+          await reply.status(req.headers['status'] ?? req.query?.status ?? 200).send({
             headers: req.headers,
             params: req.params,
             body: req.body,
