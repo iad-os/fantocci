@@ -1,14 +1,13 @@
 import fastifySwagger from '@fastify/swagger';
 import type { TypeBoxTypeProvider } from '@fastify/type-provider-typebox';
-import type { ReferenceConfiguration } from '@scalar/api-reference';
 import apiReference from '@scalar/fastify-api-reference';
 import fastify from 'fastify';
 import { createCertificate } from './certUtils.js';
 import type { FantocciOptions } from './options.js';
 import { anythingFantocci } from './plugin/anything.js';
+import { colorsFantocci } from './plugin/colors.js';
 import { oauthFantocci } from './plugin/oauth/oauth.js';
 import { oidcFantocci } from './plugin/oidc/oidc.js';
-import { colorsFantocci } from './plugin/colors.js';
 
 export async function Fantocci({ https, anything, oidc, colors }: FantocciOptions) {
   let certs: Awaited<ReturnType<typeof createCertificate>> | undefined;
@@ -80,7 +79,7 @@ export async function Fantocci({ https, anything, oidc, colors }: FantocciOption
           applicationName: 'Fantocci',
         },
         layout: 'modern',
-      } as ReferenceConfiguration,
+      },
       routePrefix: '/ui',
     });
 
