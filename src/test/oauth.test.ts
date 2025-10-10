@@ -7,7 +7,11 @@ import { oauthFantocci } from '../plugin/oauth/oauth.js';
 import { expireIn60, issueNow, jwtId, buildToken, buildFakeAccessToken } from '../plugin/oauth/oauth.utils.js';
 
 describe('OAuth2 Test Suite', () => {
-  const fantocci = fastify({ logger: { level: 'debug' } }).register(oauthFantocci);
+  const fantocci = fastify({
+    logger: {
+      level: 'debug',
+    },
+  }).register(oauthFantocci);
 
   it('build fake token', async () => {
     const aValidPayload: FakeAccessToken = {
@@ -65,7 +69,10 @@ describe('OAuth2 Test Suite', () => {
     fantocci.log.debug(res, 'Response');
     const { statusCode } = res;
     expect(statusCode).toBe(200);
-    expect(res.json()).toEqual({ active: true, ...tPayload });
+    expect(res.json()).toEqual({
+      active: true,
+      ...tPayload,
+    });
   });
   it('fail introspect', async () => {
     const tPayload = {
@@ -175,7 +182,15 @@ describe('OAuth2 Test Suite', () => {
       clientId: 'clientId',
       clientSecret: 'clientSecret',
       active: true,
-      omit: ['exp', 'iat', 'jti', 'sub', 'aud', 'iss', 'client_id'],
+      omit: [
+        'exp',
+        'iat',
+        'jti',
+        'sub',
+        'aud',
+        'iss',
+        'client_id',
+      ],
     };
     const token = buildFakeAccessToken(tPayload, fakerConf);
     const res = await fantocci.inject({

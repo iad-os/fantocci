@@ -100,7 +100,17 @@
     "resolveJsonModule": true,
     "exactOptionalPropertyTypes": false
   },
-  "extends": ["@tsconfig/node22/tsconfig.json", "@tsconfig/strictest/tsconfig.json"],
-  "include": ["./src/**/*.ts", "./src/.bin/*.ts"],
-  "exclude": ["./**/*.spec.ts", "./**/*.test.ts", "./**/test/*"]
+  "extends": [
+    "@tsconfig/node22/tsconfig.json",
+    "@tsconfig/strictest/tsconfig.json"
+  ],
+  "include": [
+    "./src/**/*.ts",
+    "./src/.bin/*.ts"
+  ],
+  "exclude": [
+    "./**/*.spec.ts",
+    "./**/*.test.ts",
+    "./**/test/*"
+  ]
 }

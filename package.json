@@ -23,8 +23,14 @@
       "default": "./dist/main.js"
     }
   },
-  "keywords": ["http", "testing", "httpbin"],
-  "files": ["dist"],
+  "keywords": [
+    "http",
+    "testing",
+    "httpbin"
+  ],
+  "files": [
+    "dist"
+  ],
   "contributors": [
     {
       "name": "Daniele Fiungo",

@@ -16,7 +16,9 @@ import {
 import { FakeAccessToken } from './oauth.types.js';
 
 export const OAuthFantocciOptions = Type.Object({
-  prefix: Type.String({ pattern: '/S+' }),
+  prefix: Type.String({
+    pattern: '/S+',
+  }),
 });
 
 export type OAuthFantocciOptions = Static<typeof OAuthFantocciOptions>;
@@ -29,10 +31,22 @@ export const oauthFantocci: FastifyPluginAsync<OAuthFantocciOptions> = async (fa
       '/introspect',
       {
         schema: {
-          tags: ['oauth'],
-          consumes: ['application/x-www-form-urlencoded'],
-          produces: ['application/json'],
-          security: [{ 'Basic Authentication': ['Basic Authentication'] }],
+          tags: [
+            'oauth',
+          ],
+          consumes: [
+            'application/x-www-form-urlencoded',
+          ],
+          produces: [
+            'application/json',
+          ],
+          security: [
+            {
+              'Basic Authentication': [
+                'Basic Authentication',
+              ],
+            },
+          ],
           body: Type.Object(
             {
               token: Type.String({
@@ -53,7 +67,7 @@ export const oauthFantocci: FastifyPluginAsync<OAuthFantocciOptions> = async (fa
                       clientSecret: 'clientSecret',
                       active: true,
                       omit: [],
-                    }
+                    },
                   ),
                 ],
               }),
@@ -75,14 +89,23 @@ export const oauthFantocci: FastifyPluginAsync<OAuthFantocciOptions> = async (fa
                     clientSecret: 'clientSecret',
                     active: true,
                     omit: [],
-                  }
+                  },
                 )}`,
               ],
-            }
+            },
           ),
           response: {
-            '200': Type.Object({ active: Type.Boolean() }, { additionalProperties: true }),
-            '401': Type.Object({ message: Type.String() }),
+            '200': Type.Object(
+              {
+                active: Type.Boolean(),
+              },
+              {
+                additionalProperties: true,
+              },
+            ),
+            '401': Type.Object({
+              message: Type.String(),
+            }),
           },
         },
       },
@@ -91,16 +114,22 @@ export const oauthFantocci: FastifyPluginAsync<OAuthFantocciOptions> = async (fa
         const { additional_fake_props, ...payload } = fakeToken;
         const [type, credentials] = (request.headers.authorization ?? '').split(' ');
         if (!credentials || type !== 'Basic') {
-          return reply.status(401).send({ message: 'Unauthorized' });
+          return reply.status(401).send({
+            message: 'Unauthorized',
+          });
         }
         const [clientId, clientSecret] = Buffer.from(credentials, 'base64').toString('utf-8').split(':');
 
         if (clientId !== additional_fake_props.clientId || clientSecret !== additional_fake_props.clientSecret) {
-          return reply.status(401).send({ message: 'Unauthorized' });
+          return reply.status(401).send({
+            message: 'Unauthorized',
+          });
         }
 
         if (new URL(fakeToken.iss).host !== request.host) {
-          return reply.send({ active: false });
+          return reply.send({
+            active: false,
+          });
         }
 
         return reply.send(
@@ -109,36 +138,54 @@ export const oauthFantocci: FastifyPluginAsync<OAuthFantocciOptions> = async (fa
                 ...omit(payload, additional_fake_props.omit ?? []),
                 active: true,
               }
-            : { active: false }
+            : {
+                active: false,
+              },
         );
-      }
+      },
     )
     .post(
       '/_build_fake',
       {
         schema: {
-          tags: ['oauth'],
+          tags: [
+            'oauth',
+          ],
           body: FakeAccessToken,
-          consumes: ['application/json'],
+          consumes: [
+            'application/json',
+          ],
         },
       },
       (req, reply) => {
         reply.send(buildToken(req.body));
-      }
+      },
     )
     .get(
       '/_decode_token',
       {
-        schema: { tags: ['oauth'], produces: ['application/json'] },
+        schema: {
+          tags: [
+            'oauth',
+          ],
+          produces: [
+            'application/json',
+          ],
+        },
       },
       async (req, reply) => {
         const bearerToken = req.headers['authorization'];
         if (!bearerToken) {
-          return { message: 'token not provided' };
+          return {
+            message: 'token not provided',
+          };
         }
         const token = bearerToken.split('Bearer')[1];
-        if (!token) return reply.status(400).send({ message: 'invalid token' });
+        if (!token)
+          return reply.status(400).send({
+            message: 'invalid token',
+          });
         return JSON.parse(decodeToken(extractToken(token)));
-      }
+      },
     );
 };

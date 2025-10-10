@@ -9,7 +9,11 @@ export async function createCertificate({
     validity: 365,
   },
   cert = {
-    domains: ['localhost', 'lo.iad2.cloud', '*.lo.iad2.cloud'],
+    domains: [
+      'localhost',
+      'lo.iad2.cloud',
+      '*.lo.iad2.cloud',
+    ],
     validity: 365,
     organization: 'IAD Srl',
   },
@@ -30,5 +34,8 @@ export async function createCertificate({
     ca: caCerts,
   });
 
-  return { ca: caCerts, certs };
+  return {
+    ca: caCerts,
+    certs,
+  };
 }

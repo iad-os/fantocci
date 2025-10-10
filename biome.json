@@ -1,5 +1,5 @@
 {
-  "$schema": "https://biomejs.dev/schemas/1.9.4/schema.json",
+  "$schema": "https://biomejs.dev/schemas/2.2.5/schema.json",
   "vcs": {
     "enabled": false,
     "clientKind": "git",
@@ -7,67 +7,57 @@
   },
   "files": {
     "ignoreUnknown": false,
-    "ignore": ["dist/**"]
+    "includes": [
+      "**",
+      "!**/.devcontainer",
+      "!**/.vscode",
+      "!**/dist",
+      "!**/src/generated"
+    ]
   },
   "formatter": {
-    "enabled": true,
     "useEditorconfig": true,
-    "formatWithErrors": false,
+    "enabled": true,
     "indentStyle": "space",
-    "indentWidth": 2,
-    "lineEnding": "lf",
     "lineWidth": 120,
-    "attributePosition": "auto",
-    "bracketSpacing": true
+    "lineEnding": "lf",
+    "expand": "always"
   },
-  "organizeImports": {
-    "enabled": true
+  "assist": {
+    "actions": {
+      "source": {
+        "organizeImports": "on"
+      }
+    }
   },
   "linter": {
     "enabled": true,
     "rules": {
       "recommended": true,
-      "style": {
-        "noUnusedTemplateLiteral": "off"
-      },
       "complexity": {
-        "noForEach": "off",
-        "useLiteralKeys": "off"
+        "useLiteralKeys": "off",
+        "useArrowFunction": "off"
+      },
+      "suspicious": {
+        "noConfusingVoidType": "off"
+      },
+      "style": {
+        "noParameterAssign": "error",
+        "useAsConstAssertion": "error",
+        "useDefaultParameterLast": "error",
+        "useEnumInitializers": "error",
+        "useSelfClosingElements": "error",
+        "useSingleVarDeclarator": "error",
+        "noUnusedTemplateLiteral": "error",
+        "useNumberNamespace": "error",
+        "noInferrableTypes": "error",
+        "noUselessElse": "error"
       }
     }
   },
   "javascript": {
     "formatter": {
-      "jsxQuoteStyle": "double",
-      "quoteProperties": "asNeeded",
-      "trailingCommas": "es5",
-      "semicolons": "always",
-      "arrowParentheses": "always",
-      "bracketSameLine": false,
-      "quoteStyle": "single",
-      "attributePosition": "auto",
-      "bracketSpacing": true
+      "quoteStyle": "single"
     }
-  },
-  "overrides": [
-    {
-      "include": ["*.md"],
-      "javascript": {
-        "formatter": {
-          "trailingCommas": "none",
-          "arrowParentheses": "asNeeded"
-        }
-      },
-      "formatter": {
-        "indentStyle": "space",
-        "lineWidth": 70
-      }
-    },
-    {
-      "include": ["*.{json,babelrc,eslintrc,remarkrc,prettierrc}"],
-      "formatter": {
-        "indentStyle": "space"
-      }
-    }
-  ]
+  }
 }

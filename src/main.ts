@@ -25,7 +25,7 @@ export default async function start(opts: FantocciOptions) {
       }
       app.log.info(`server listening on ${address}`);
       resolve(app);
-    }
+    },
   );
   return promise;
 }
@@ -42,5 +42,9 @@ function promiseKeeper<T = unknown>() {
     resolve = res;
     reject = rej;
   });
-  return { promise, resolve, reject };
+  return {
+    promise,
+    resolve,
+    reject,
+  };
 }

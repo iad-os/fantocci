@@ -15,7 +15,12 @@ export const AnythingFantocciOptions = Type.Object(
       default: 1000 * 60 * 10,
     }),
   },
-  { default: { delay: 1, maxDelay: 1000 * 60 * 10 } }
+  {
+    default: {
+      delay: 1,
+      maxDelay: 1000 * 60 * 10,
+    },
+  },
 );
 
 export type AnythingFantocciOptions = Static<typeof AnythingFantocciOptions>;
@@ -35,10 +40,21 @@ export const anythingFantocci: FastifyPluginAsync<AnythingFantocciOptions> = asy
     .withTypeProvider<TypeBoxTypeProvider>()
     //.register(formbody)
     .route({
-      method: ['DELETE', 'PATCH', 'POST', 'PUT', 'OPTIONS'],
+      method: [
+        'DELETE',
+        'PATCH',
+        'POST',
+        'PUT',
+        'OPTIONS',
+      ],
       schema: {
-        tags: ['request-inspection'],
-        body: Type.Union([Type.String(), Type.Any()]),
+        tags: [
+          'request-inspection',
+        ],
+        body: Type.Union([
+          Type.String(),
+          Type.Any(),
+        ]),
         params: Type.Object(
           {
             delay: Type.Optional(
@@ -46,10 +62,12 @@ export const anythingFantocci: FastifyPluginAsync<AnythingFantocciOptions> = asy
                 minimum: 0,
                 maximum: maxDelay,
                 description: 'Delay of the response in milliseconds',
-              })
+              }),
             ),
           },
-          { additionalProperties: true }
+          {
+            additionalProperties: true,
+          },
         ),
         headers: Type.Object(
           {
@@ -58,17 +76,19 @@ export const anythingFantocci: FastifyPluginAsync<AnythingFantocciOptions> = asy
                 minimum: 0,
                 maximum: maxDelay,
                 description: 'Delay of the response in milliseconds',
-              })
+              }),
             ),
             status: Type.Optional(
               Type.Number({
                 minimum: 100,
                 maximum: 1000,
                 description: 'Status code of the response',
-              })
+              }),
             ),
           },
-          { additionalProperties: true }
+          {
+            additionalProperties: true,
+          },
         ),
         querystring: Type.Object(
           {
@@ -77,27 +97,32 @@ export const anythingFantocci: FastifyPluginAsync<AnythingFantocciOptions> = asy
                 minimum: 0,
                 maximum: maxDelay,
                 description: 'Delay of the response in milliseconds',
-              })
+              }),
             ),
             status: Type.Optional(
               Type.Number({
                 minimum: 100,
                 maximum: 1000,
                 description: 'Status code of the response',
-              })
+              }),
             ),
           },
-          { additionalProperties: true }
+          {
+            additionalProperties: true,
+          },
         ),
       },
       url: '/:delay?',
       prefixTrailingSlash: 'no-slash',
       handler: async (req, reply) => {
         const delayTime = calculateDelay(
-          { maxDelay, defaultDelay: 1 },
+          {
+            maxDelay,
+            defaultDelay: 1,
+          },
           req.params.delay,
           req.headers.delay,
-          req.query.delay
+          req.query.delay,
         );
         setTimeout(async () => {
           await reply.status(req.headers['status'] ?? req.query?.status ?? 200).send({
@@ -114,10 +139,17 @@ export const anythingFantocci: FastifyPluginAsync<AnythingFantocciOptions> = asy
       },
     })
     .route({
-      method: ['GET', 'HEAD'],
+      method: [
+        'GET',
+        'HEAD',
+      ],
       schema: {
-        tags: ['request-inspection'],
-        produces: ['application/json'],
+        tags: [
+          'request-inspection',
+        ],
+        produces: [
+          'application/json',
+        ],
         params: Type.Object(
           {
             delay: Type.Optional(
@@ -125,10 +157,12 @@ export const anythingFantocci: FastifyPluginAsync<AnythingFantocciOptions> = asy
                 minimum: 0,
                 maximum: maxDelay,
                 description: 'Delay of the response in milliseconds',
-              })
+              }),
             ),
           },
-          { additionalProperties: true }
+          {
+            additionalProperties: true,
+          },
         ),
         headers: Type.Object(
           {
@@ -137,17 +171,19 @@ export const anythingFantocci: FastifyPluginAsync<AnythingFantocciOptions> = asy
                 minimum: 0,
                 maximum: maxDelay,
                 description: 'Delay of the response in milliseconds',
-              })
+              }),
             ),
             status: Type.Optional(
               Type.Number({
                 minimum: 100,
                 maximum: 1000,
                 description: 'Status code of the response',
-              })
+              }),
             ),
           },
-          { additionalProperties: true }
+          {
+            additionalProperties: true,
+          },
         ),
         querystring: Type.Object(
           {
@@ -156,27 +192,32 @@ export const anythingFantocci: FastifyPluginAsync<AnythingFantocciOptions> = asy
                 minimum: 0,
                 maximum: maxDelay,
                 description: 'Delay of the response in milliseconds',
-              })
+              }),
             ),
             status: Type.Optional(
               Type.Number({
                 minimum: 100,
                 maximum: 1000,
                 description: 'Status code of the response',
-              })
+              }),
             ),
           },
-          { additionalProperties: true }
+          {
+            additionalProperties: true,
+          },
         ),
       },
       url: '/:delay?',
       prefixTrailingSlash: 'no-slash',
       handler: async (req, reply) => {
         const delayTime = calculateDelay(
-          { maxDelay, defaultDelay: 1000 },
+          {
+            maxDelay,
+            defaultDelay: 1000,
+          },
           req.params.delay,
           req.headers.delay,
-          req.query.delay
+          req.query.delay,
         );
         setTimeout(async () => {
           await reply.status(req.headers['status'] ?? req.query?.status ?? 200).send({
@@ -194,7 +235,13 @@ export const anythingFantocci: FastifyPluginAsync<AnythingFantocciOptions> = asy
     });
 };
 function calculateDelay(
-  { maxDelay, defaultDelay }: { maxDelay: number; defaultDelay: number },
+  {
+    maxDelay,
+    defaultDelay,
+  }: {
+    maxDelay: number;
+    defaultDelay: number;
+  },
   ...delayTimes: (number | undefined)[]
 ) {
   const delayPrefs = delayTimes.filter((d): d is number => d !== undefined);

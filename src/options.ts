@@ -16,7 +16,10 @@ export const FantocciOptions = Type.Object(
       minimum: 0,
       maximum: 65535,
     }),
-    host: Type.String({ default: '0.0.0.0', description: 'Host to listen on' }),
+    host: Type.String({
+      default: '0.0.0.0',
+      description: 'Host to listen on',
+    }),
     https: Type.Union(
       [
         Type.String({
@@ -27,15 +30,23 @@ export const FantocciOptions = Type.Object(
       {
         default: false,
         description: 'If false disable HTTPS, if true certs will be generated automatically',
-      }
+      },
     ),
     anything: AnythingFantocciOptions,
     colors: ColorsFantocciOptions,
-    oidc: Type.Union([OIDCFantocciOptions, Type.Literal(false)], {
-      default: false,
-    }),
+    oidc: Type.Union(
+      [
+        OIDCFantocciOptions,
+        Type.Literal(false),
+      ],
+      {
+        default: false,
+      },
+    ),
   },
-  { additionalProperties: false }
+  {
+    additionalProperties: false,
+  },
 );
 
 export type FantocciOptions = Simplify<Static<typeof FantocciOptions>>;
@@ -54,9 +65,15 @@ export default ghii(FantocciOptions)
     if (process.env['ANYTHING_DELAY'] || process.env['ANYTHING_MAX_DELAY'])
       return {
         anything: {
-          ...(process.env['ANYTHING_DELAY'] ? { delay: Number.parseInt(process.env['ANYTHING_DELAY'], 10) } : {}),
+          ...(process.env['ANYTHING_DELAY']
+            ? {
+                delay: Number.parseInt(process.env['ANYTHING_DELAY'], 10),
+              }
+            : {}),
           ...(process.env['ANYTHING_MAX_DELAY']
-            ? { maxDelay: Number.parseInt(process.env['ANYTHING_MAX_DELAY'], 10) }
+            ? {
+                maxDelay: Number.parseInt(process.env['ANYTHING_MAX_DELAY'], 10),
+              }
             : {}),
         },
       };
@@ -86,18 +103,27 @@ export default ghii(FantocciOptions)
   .loader(async () => {
     return {
       anything: {
-        ...(process.env['ANYTHING_DELAY'] ? { delay: Number.parseInt(process.env['ANYTHING_DELAY'], 10) } : {}),
+        ...(process.env['ANYTHING_DELAY']
+          ? {
+              delay: Number.parseInt(process.env['ANYTHING_DELAY'], 10),
+            }
+          : {}),
         ...(process.env['ANYTHING_MAX_DELAY']
-          ? { maxDelay: Number.parseInt(process.env['ANYTHING_MAX_DELAY'], 10) }
+          ? {
+              maxDelay: Number.parseInt(process.env['ANYTHING_MAX_DELAY'], 10),
+            }
           : {}),
       },
     };
   })
   .loader(
     yamlLoader(
-      { throwOnError: false, logger: (err, msg) => console.error(err, msg) },
-      process.env['FANTOCCI_CONFIG'] ?? 'fantocci.yaml'
-    )
+      {
+        throwOnError: false,
+        logger: (err, msg) => console.error(err, msg),
+      },
+      process.env['FANTOCCI_CONFIG'] ?? 'fantocci.yaml',
+    ),
   )
   .loader(async () => {
     return {
@@ -124,8 +150,16 @@ export default ghii(FantocciOptions)
       ...(d || md
         ? {
             anything: {
-              ...(d ? { delay: Number.parseInt(d, 10) } : {}),
-              ...(md ? { maxDelay: Number.parseInt(md, 10) } : {}),
+              ...(d
+                ? {
+                    delay: Number.parseInt(d, 10),
+                  }
+                : {}),
+              ...(md
+                ? {
+                    maxDelay: Number.parseInt(md, 10),
+                  }
+                : {}),
             },
           }
         : {}),

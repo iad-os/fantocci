@@ -7,19 +7,29 @@ import { jwtDecode } from 'jwt-decode';
 import { Issuer } from 'openid-client';
 
 export const OIDCFantocciOptions = Type.Object({
-  prefix: Type.Optional(Type.String({ pattern: '/S+' })),
+  prefix: Type.Optional(
+    Type.String({
+      pattern: '/S+',
+    }),
+  ),
   tokenHeader: Type.Optional(Type.String()),
-  issuer: Type.String({ format: 'uri' }),
+  issuer: Type.String({
+    format: 'uri',
+  }),
   clientId: Type.String(),
   clientSecret: Type.String(),
-  discovery: Type.Optional(Type.String({ format: 'uri' })),
+  discovery: Type.Optional(
+    Type.String({
+      format: 'uri',
+    }),
+  ),
 });
 
 export type OIDCFantocciOptions = Static<typeof OIDCFantocciOptions>;
 
 export const oidcFantocci: FastifyPluginAsync<OIDCFantocciOptions> = async (
   fastify,
-  { tokenHeader, discovery, clientId, clientSecret, issuer }
+  { tokenHeader, discovery, clientId, clientSecret, issuer },
 ) => {
   const oidcIssuer: Issuer = await Issuer.discover(resolveWellKnownUri(discovery ?? issuer));
   const client = new oidcIssuer.Client({
@@ -27,8 +37,12 @@ export const oidcFantocci: FastifyPluginAsync<OIDCFantocciOptions> = async (
     client_secret: clientSecret,
   });
   const headerTypeBuilder = (tokenHeader: string | undefined) => {
-    if (tokenHeader) return Type.Object({ [tokenHeader]: Type.String() });
+    if (tokenHeader)
+      return Type.Object({
+        [tokenHeader]: Type.String(),
+      });
     return Type.Object({
+      // biome-ignore lint/suspicious/noTemplateCurlyInString: Typebox syntax
       authorization: Type.Optional(Type.TemplateLiteral('Bearer ${string}')),
     });
   };
@@ -42,11 +56,22 @@ export const oidcFantocci: FastifyPluginAsync<OIDCFantocciOptions> = async (
       '/introspect',
       {
         schema: {
-          tags: ['oidc-tools'],
-          produces: ['application/json'],
+          tags: [
+            'oidc-tools',
+          ],
+          produces: [
+            'application/json',
+          ],
           headers: headerType,
           response: {
-            '200': Type.Object({ active: Type.Boolean() }, { additionalProperties: true }),
+            '200': Type.Object(
+              {
+                active: Type.Boolean(),
+              },
+              {
+                additionalProperties: true,
+              },
+            ),
             '400': Type.Object({
               message: Type.String(),
               hint: Type.Optional(Type.String()),
@@ -84,18 +109,28 @@ export const oidcFantocci: FastifyPluginAsync<OIDCFantocciOptions> = async (
           return reply.send(response);
         } catch (error) {
           if (error instanceof Error) {
-            return reply.status(500).send({ name: error.name, message: error.message });
+            return reply.status(500).send({
+              name: error.name,
+              message: error.message,
+            });
           }
           reply.status(500).send({
             message: 'An error occured while introspecting the token',
           });
         }
-      }
+      },
     )
     .get(
       '/jwt',
       {
-        schema: { tags: ['oidc-tools'], produces: ['application/json'] },
+        schema: {
+          tags: [
+            'oidc-tools',
+          ],
+          produces: [
+            'application/json',
+          ],
+        },
       },
       async (request, reply) => {
         const token = getToken(request.headers, tokenHeader);
@@ -109,12 +144,19 @@ export const oidcFantocci: FastifyPluginAsync<OIDCFantocciOptions> = async (
         }
         const { token: tokenBody } = token;
         return reply.send(tokenBody);
-      }
+      },
     )
     .get(
       '/userinfo',
       {
-        schema: { tags: ['oidc-tools'], produces: ['application/json'] },
+        schema: {
+          tags: [
+            'oidc-tools',
+          ],
+          produces: [
+            'application/json',
+          ],
+        },
       },
       async (request, reply) => {
         const token = getToken(request.headers, tokenHeader);
@@ -142,13 +184,16 @@ export const oidcFantocci: FastifyPluginAsync<OIDCFantocciOptions> = async (
           return reply.send(response);
         } catch (error) {
           if (error instanceof Error) {
-            return reply.status(500).send({ name: error.name, message: error.message });
+            return reply.status(500).send({
+              name: error.name,
+              message: error.message,
+            });
           }
           reply.status(500).send({
             message: 'An error occured while introspecting the token',
           });
         }
-      }
+      },
     );
 };
 
@@ -181,5 +226,8 @@ function getToken(headers: IncomingHttpHeaders, tokenHeader: string | undefined)
     rawToken = headers['authorization'].split('Bearer')[1];
   }
   if (!rawToken) return;
-  return { raw: rawToken, token: jwtDecode(rawToken) };
+  return {
+    raw: rawToken,
+    token: jwtDecode(rawToken),
+  };
 }

@@ -11,7 +11,7 @@ import { oidcFantocci } from './plugin/oidc/oidc.js';
 import { colorsFantocci } from './plugin/colors.js';
 
 export async function Fantocci({ https, anything, oidc, colors }: FantocciOptions) {
-  let certs: Awaited<ReturnType<typeof createCertificate>> | undefined = undefined;
+  let certs: Awaited<ReturnType<typeof createCertificate>> | undefined;
   if (https) {
     certs = await createCertificate({
       cert: {
@@ -24,17 +24,19 @@ export async function Fantocci({ https, anything, oidc, colors }: FantocciOption
   }
 
   const fantocci = await fastify({
-    logger: { level: 'debug' },
+    logger: {
+      level: 'debug',
+    },
     ...(certs
       ? {
-        http2: true,
-        https: {
-          allowHTTP1: true, // f
-          ca: certs.ca.cert,
-          key: certs.certs.key,
-          cert: certs.certs.cert,
-        },
-      }
+          http2: true,
+          https: {
+            allowHTTP1: true, // f
+            ca: certs.ca.cert,
+            key: certs.certs.key,
+            cert: certs.certs.cert,
+          },
+        }
       : {}),
   }).withTypeProvider<TypeBoxTypeProvider>();
 
@@ -48,8 +50,14 @@ export async function Fantocci({ https, anything, oidc, colors }: FantocciOption
           version: '0.2.30',
         },
         tags: [
-          { name: 'oauth', description: 'OAuth2 testing __endpoint__' },
-          { name: 'anything', description: 'Anything endpoints' },
+          {
+            name: 'oauth',
+            description: 'OAuth2 testing __endpoint__',
+          },
+          {
+            name: 'anything',
+            description: 'Anything endpoints',
+          },
         ],
         components: {
           securitySchemes: {
@@ -76,7 +84,9 @@ export async function Fantocci({ https, anything, oidc, colors }: FantocciOption
       routePrefix: '/ui',
     });
 
-  await fantocci.register(oauthFantocci, { prefix: '/oauth' });
+  await fantocci.register(oauthFantocci, {
+    prefix: '/oauth',
+  });
   if (oidc) {
     await fantocci.register(oidcFantocci, {
       prefix: '/oidc',
@@ -94,7 +104,9 @@ export async function Fantocci({ https, anything, oidc, colors }: FantocciOption
       description: colors.description,
     })
     .route({
-      method: ['GET'],
+      method: [
+        'GET',
+      ],
       url: '/',
       schema: {
         hide: true,

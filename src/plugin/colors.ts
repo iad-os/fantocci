@@ -1,6 +1,5 @@
-import { Static, Type } from '@sinclair/typebox';
+import { type Static, Type } from '@sinclair/typebox';
 import type { FastifyPluginAsync } from 'fastify';
-
 
 export const ColorsFantocciOptions = Type.Object({
   title: Type.String({
@@ -11,7 +10,7 @@ export const ColorsFantocciOptions = Type.Object({
     default: 'This is a colors plugin',
     description: 'Description of the colors plugin',
   }),
-})
+});
 
 export type ColorsFantocciOptions = Static<typeof ColorsFantocciOptions>;
 
@@ -71,60 +70,102 @@ export const colorsFantocci: FastifyPluginAsync<ColorsFantocciOptions> = async (
   });
   fastify
     //.register(formbody)
-    .all('/red', {
-      schema: {
-        tags: ['colors'],
-      }
-    }, async (_, reply) => {
-      reply.header('Content-Type', 'text/html');
-      reply.send(colorsHtmlRespone('red', title, description));
-    })
-    .all('/blue', {
-      schema: {
-        tags: ['colors'],
-      }
-    }, async (_, reply) => {
-      reply.header('Content-Type', 'text/html');
-      reply.send(colorsHtmlRespone('blue', title, description));
-    })
-    .all('/green', {
-      schema: {
-        tags: ['colors'],
-      }
-    }, async (_, reply) => {
-      reply.header('Content-Type', 'text/html');
-      reply.send(colorsHtmlRespone('green', title, description));
-    })
-    .all('/yellow', {
-      schema: {
-        tags: ['colors'],
-      }
-    }, async (_, reply) => {
-      reply.header('Content-Type', 'text/html');
-      reply.send(colorsHtmlRespone('yellow', title, description));
-    })
-    .all('/purple', {
-      schema: {
-        tags: ['colors'],
-      }
-    }, async (_, reply) => {
-      reply.header('Content-Type', 'text/html');
-      reply.send(colorsHtmlRespone('purple', title, description));
-    })
-    .all('/orange', {
-      schema: {
-        tags: ['colors'],
-      }
-    }, async (_, reply) => {
-      reply.header('Content-Type', 'text/html');
-      reply.send(colorsHtmlRespone('orange', title, description));
-    })
-    .all('/pink', {
-      schema: {
-        tags: ['colors'],
-      }
-    }, async (_, reply) => {
-      reply.header('Content-Type', 'text/html');
-      reply.send(colorsHtmlRespone('pink', title, description));
-    });
+    .all(
+      '/red',
+      {
+        schema: {
+          tags: [
+            'colors',
+          ],
+        },
+      },
+      async (_, reply) => {
+        reply.header('Content-Type', 'text/html');
+        reply.send(colorsHtmlRespone('red', title, description));
+      },
+    )
+    .all(
+      '/blue',
+      {
+        schema: {
+          tags: [
+            'colors',
+          ],
+        },
+      },
+      async (_, reply) => {
+        reply.header('Content-Type', 'text/html');
+        reply.send(colorsHtmlRespone('blue', title, description));
+      },
+    )
+    .all(
+      '/green',
+      {
+        schema: {
+          tags: [
+            'colors',
+          ],
+        },
+      },
+      async (_, reply) => {
+        reply.header('Content-Type', 'text/html');
+        reply.send(colorsHtmlRespone('green', title, description));
+      },
+    )
+    .all(
+      '/yellow',
+      {
+        schema: {
+          tags: [
+            'colors',
+          ],
+        },
+      },
+      async (_, reply) => {
+        reply.header('Content-Type', 'text/html');
+        reply.send(colorsHtmlRespone('yellow', title, description));
+      },
+    )
+    .all(
+      '/purple',
+      {
+        schema: {
+          tags: [
+            'colors',
+          ],
+        },
+      },
+      async (_, reply) => {
+        reply.header('Content-Type', 'text/html');
+        reply.send(colorsHtmlRespone('purple', title, description));
+      },
+    )
+    .all(
+      '/orange',
+      {
+        schema: {
+          tags: [
+            'colors',
+          ],
+        },
+      },
+      async (_, reply) => {
+        reply.header('Content-Type', 'text/html');
+        reply.send(colorsHtmlRespone('orange', title, description));
+      },
+    )
+    .all(
+      '/pink',
+      {
+        schema: {
+          tags: [
+            'colors',
+          ],
+        },
+      },
+      async (_, reply) => {
+        reply.header('Content-Type', 'text/html');
+        reply.send(colorsHtmlRespone('pink', title, description));
+      },
+    );
 };

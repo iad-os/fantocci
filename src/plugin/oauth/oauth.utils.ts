@@ -47,8 +47,10 @@ export function jwtId(): string {
 }
 
 export function buildFakeAccessToken(
-  accessToken: AccessTokenLikeRFC9068 & { [key: string]: unknown },
-  fantocciFakerProps: FantocciFakerProps
+  accessToken: AccessTokenLikeRFC9068 & {
+    [key: string]: unknown;
+  },
+  fantocciFakerProps: FantocciFakerProps,
 ): string {
   return buildToken({
     ...accessToken,
