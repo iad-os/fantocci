@@ -1,187 +1,116 @@
 import { fastify } from 'fastify';
-import { describe, expect, it } from 'vitest';
+import { afterAll, beforeAll, describe, expect, it } from 'vitest';
+import { oauthPlugin } from '../plugins/oauth/oauth.js';
+import type { FakeAccessToken, FantocciFakerProps } from '../plugins/oauth/oauth.types.js';
+import { buildFakeAccessToken, buildToken, expireIn60, issueNow, jwtId } from '../plugins/oauth/oauth.utils.js';
 
-import type { FakeAccessToken, FantocciFakerProps } from '../plugin/oauth/oauth.types.js';
+const claims = () => ({
+  client_id: 'clientId',
+  iss: 'http://myhost',
+  exp: expireIn60(),
+  iat: issueNow(),
+  jti: jwtId(),
+  aud: 'dev',
+  sub: 'a-man-have-a-subject',
+});
+const faker: FantocciFakerProps = {
+  clientId: 'clientId',
+  clientSecret: 'clientSecret',
+  active: true,
+};
+const basic = (id: string, secret: string) => `Basic ${Buffer.from(`${id}:${secret}`).toString('base64')}`;
 
-import { oauthFantocci } from '../plugin/oauth/oauth.js';
-import { expireIn60, issueNow, jwtId, buildToken, buildFakeAccessToken } from '../plugin/oauth/oauth.utils.js';
-
-describe('OAuth2 Test Suite', () => {
-  const fantocci = fastify({
-    logger: {
-      level: 'debug',
-    },
-  }).register(oauthFantocci);
-
-  it('build fake token', async () => {
-    const aValidPayload: FakeAccessToken = {
-      client_id: 'clientId',
-      iss: 'http://myhost',
-      exp: expireIn60(),
-      iat: issueNow(),
-      jti: jwtId(),
-      aud: 'dev',
-      sub: 'a-man-have-a-subject',
-      additional_fake_props: {
-        clientId: 'clientId',
-        clientSecret: 'clientSecret',
-        active: true,
-      },
-    };
-    const aValidTokenB64 = buildToken(aValidPayload);
-    const { body } = await fantocci.inject({
-      method: 'POST',
-      path: '/_build_fake',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      payload: JSON.stringify(aValidPayload),
-    });
-
-    expect(body).toBe(aValidTokenB64);
+describe('oauth plugin', () => {
+  const app = fastify().register(oauthPlugin, {
+    prefix: '/oauth',
   });
-  it('pass introspect', async () => {
-    const tPayload = {
-      client_id: 'clientId',
-      iss: 'http://myhost',
-      exp: expireIn60(),
-      iat: issueNow(),
-      jti: jwtId(),
-      aud: 'dev',
-      sub: 'a-man-have-a-subject',
-    };
-    const fakerConf = {
-      clientId: 'clientId',
-      clientSecret: 'clientSecret',
-      active: true,
-    };
-    const token = buildFakeAccessToken(tPayload, fakerConf);
-    const res = await fantocci.inject({
+  beforeAll(() => app.ready());
+  afterAll(() => app.close());
+
+  const introspect = (token: string, host: string, authorization: string) =>
+    app.inject({
       method: 'POST',
-      path: '/introspect',
+      url: '/oauth/introspect',
       headers: {
-        host: 'myhost',
+        host,
         'content-type': 'application/x-www-form-urlencoded',
-        authorization: `Basic ${Buffer.from(`${fakerConf.clientId}:${fakerConf.clientSecret}`).toString('base64')}`,
+        authorization,
       },
       payload: `token=${token}`,
     });
-    fantocci.log.debug(res, 'Response');
-    const { statusCode } = res;
-    expect(statusCode).toBe(200);
+
+  it('builds a fake token', async () => {
+    const payload: FakeAccessToken = {
+      ...claims(),
+      additional_fake_props: faker,
+    };
+    const res = await app.inject({
+      method: 'POST',
+      url: '/oauth/_build_fake',
+      payload,
+    });
+    expect(res.statusCode).toBe(200);
+    expect(res.body).toBe(buildToken(payload));
+  });
+
+  it('introspects an active token', async () => {
+    const payload = claims();
+    const res = await introspect(buildFakeAccessToken(payload, faker), 'myhost', basic('clientId', 'clientSecret'));
+    expect(res.statusCode).toBe(200);
     expect(res.json()).toEqual({
       active: true,
-      ...tPayload,
+      ...payload,
     });
   });
-  it('fail introspect', async () => {
-    const tPayload = {
-      client_id: 'clientId',
-      iss: 'http://myhost',
-      exp: expireIn60(),
-      iat: issueNow(),
-      jti: jwtId(),
-      aud: 'dev',
-      sub: 'a-man-have-a-subject',
-    };
-    const fakerConf = {
-      clientId: 'clientId',
-      clientSecret: 'clientSecret',
-      active: true,
-    };
-    const token = buildFakeAccessToken(tPayload, fakerConf);
-    const res = await fantocci.inject({
-      method: 'POST',
-      path: '/introspect',
-      headers: {
-        host: 'not.myhost',
-        'content-type': 'application/x-www-form-urlencoded',
-        authorization: `Basic ${Buffer.from(`${fakerConf.clientId}:${fakerConf.clientSecret}`).toString('base64')}`,
-      },
-      payload: `token=${token}`,
-    });
-    fantocci.log.debug(res, 'Response');
-    const { statusCode } = res;
-    expect(statusCode).toBe(200);
+
+  it('reports inactive when the issuer host differs from the request host', async () => {
+    const res = await introspect(
+      buildFakeAccessToken(claims(), faker),
+      'not.myhost',
+      basic('clientId', 'clientSecret'),
+    );
+    expect(res.statusCode).toBe(200);
     expect(res.json()).toEqual({
       active: false,
     });
   });
-  it('fail with 401 if credential clientId is wrong', async () => {
-    const tPayload = {
-      client_id: 'clientId',
-      iss: 'http://myhost',
-      exp: expireIn60(),
-      iat: issueNow(),
-      jti: jwtId(),
-      aud: 'dev',
-      sub: 'a-man-have-a-subject',
-    };
-    const fakerConf = {
-      clientId: 'clientId',
-      clientSecret: 'clientSecret',
-      active: true,
-    };
-    const token = buildFakeAccessToken(tPayload, fakerConf);
-    const res = await fantocci.inject({
-      method: 'POST',
-      path: '/introspect',
-      headers: {
-        host: 'not.myhost',
-        'content-type': 'application/x-www-form-urlencoded',
-        authorization: `Basic ${Buffer.from(`not${fakerConf.clientId}:${fakerConf.clientSecret}`).toString('base64')}`,
-      },
-      payload: `token=${token}`,
+
+  it('reports inactive when the token says so', async () => {
+    const token = buildFakeAccessToken(claims(), {
+      ...faker,
+      active: false,
     });
-    fantocci.log.debug(res, 'Response');
-    const { statusCode } = res;
-    expect(statusCode).toBe(401);
-  });
-  it('fail with 401 if credential clientSecret is wrong', async () => {
-    const tPayload = {
-      client_id: 'clientId',
-      iss: 'http://myhost',
-      exp: expireIn60(),
-      iat: issueNow(),
-      jti: jwtId(),
-      aud: 'dev',
-      sub: 'a-man-have-a-subject',
-    };
-    const fakerConf = {
-      clientId: 'clientId',
-      clientSecret: 'clientSecret',
-      active: true,
-    };
-    const token = buildFakeAccessToken(tPayload, fakerConf);
-    const res = await fantocci.inject({
-      method: 'POST',
-      path: '/introspect',
-      headers: {
-        host: 'not.myhost',
-        'content-type': 'application/x-www-form-urlencoded',
-        authorization: `Basic ${Buffer.from(`${fakerConf.clientId}:not${fakerConf.clientSecret}`).toString('base64')}`,
-      },
-      payload: `token=${token}`,
+    const res = await introspect(token, 'myhost', basic('clientId', 'clientSecret'));
+    expect(res.json()).toEqual({
+      active: false,
     });
-    fantocci.log.debug(res, 'Response');
-    const { statusCode } = res;
-    expect(statusCode).toBe(401);
   });
 
-  it('omit from introspect', async () => {
-    const tPayload = {
-      client_id: 'clientId',
-      iss: 'http://myhost',
-      exp: expireIn60(),
-      iat: issueNow(),
-      jti: jwtId(),
-      aud: 'dev',
-      sub: 'a-man-have-a-subject',
-    };
-    const fakerConf: FantocciFakerProps = {
-      clientId: 'clientId',
-      clientSecret: 'clientSecret',
-      active: true,
+  it.each([
+    [
+      'wrong client id',
+      basic('nope', 'clientSecret'),
+    ],
+    [
+      'wrong secret',
+      basic('clientId', 'nope'),
+    ],
+    [
+      'missing credentials',
+      '',
+    ],
+    [
+      'not basic',
+      'Bearer abc',
+    ],
+  ])('answers 401 with %s', async (_label, authorization) => {
+    const res = await introspect(buildFakeAccessToken(claims(), faker), 'myhost', authorization);
+    expect(res.statusCode).toBe(401);
+  });
+
+  it('omits the requested claims', async () => {
+    const token = buildFakeAccessToken(claims(), {
+      ...faker,
       omit: [
         'exp',
         'iat',
@@ -191,23 +120,36 @@ describe('OAuth2 Test Suite', () => {
         'iss',
         'client_id',
       ],
-    };
-    const token = buildFakeAccessToken(tPayload, fakerConf);
-    const res = await fantocci.inject({
-      method: 'POST',
-      path: '/introspect',
-      headers: {
-        host: 'myhost',
-        'content-type': 'application/x-www-form-urlencoded',
-        authorization: `Basic ${Buffer.from(`${fakerConf.clientId}:${fakerConf.clientSecret}`).toString('base64')}`,
-      },
-      payload: `token=${token}`,
     });
-    fantocci.log.debug(res, 'Response');
-    const { statusCode } = res;
-    expect(statusCode).toBe(200);
+    const res = await introspect(token, 'myhost', basic('clientId', 'clientSecret'));
     expect(res.json()).toEqual({
       active: true,
     });
+  });
+
+  it('answers 400 on a malformed token', async () => {
+    const res = await introspect('not-a-jwt', 'myhost', basic('clientId', 'clientSecret'));
+    expect(res.statusCode).toBe(400);
+  });
+
+  it('decodes a bearer token', async () => {
+    const payload = claims();
+    const res = await app.inject({
+      method: 'GET',
+      url: '/oauth/_decode_token',
+      headers: {
+        authorization: `Bearer ${buildToken(payload)}`,
+      },
+    });
+    expect(res.statusCode).toBe(200);
+    expect(res.json()).toEqual(payload);
+    expect(
+      (
+        await app.inject({
+          method: 'GET',
+          url: '/oauth/_decode_token',
+        })
+      ).statusCode,
+    ).toBe(400);
   });
 });

@@ -1,103 +1,60 @@
-@host=127.0.0.1:3000
+# VS Code REST Client (humao.rest-client) requests. Start the server first: npm run dev
+@host = localhost:3000
 
-###
-# @name missingToken
-DELETE /anything HTTP/1.1
-Host: {{host}}
-ciao: ciao
+### Echo a request
+DELETE http://{{host}}/anything?foo=bar
+x-trace: 1
 
-###
+### Echo with delay (smallest of path/header/query wins) and custom status
+POST http://{{host}}/anything/2000?delay=1500
+Content-Type: application/json
+delay: 1000
+status: 503
+
+{ "hello": "world" }
+
+### Build a fake token
 # @name buildFakeToken
-POST /oauth/_build_fake
-Host: {{host}}
+POST http://{{host}}/oauth/_build_fake
 Content-Type: application/json
 
 {
-  "client_id": "clientId",
   "iss": "http://{{host}}",
-  "exp": {{$timestamp}},
+  "sub": "alice",
+  "aud": "my-api",
+  "client_id": "my-app",
+  "exp": {{$timestamp 1 h}},
   "iat": {{$timestamp}},
-  "jti": "66c6a02c-5b78-419d-b065-b82bebf3978a",
-  "aud": "dev",
-  "sub": "a-man-have-a-subject",
+  "jti": "{{$guid}}",
+  "scope": "openid profile",
   "additional_fake_props": {
-    "clientId": "clientId",
-    "clientSecret" : "clientSecret",
-    "active": true
+    "clientId": "my-app",
+    "clientSecret": "s3cret",
+    "active": true,
+    "omit": ["jti"]
   }
 }
 
-###
-# @name decodeToken
-GET /oauth/_decode_token
-Host: {{host}}
-Authorization: Bearer eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICJZLUV3NVk4LTBEeWJPcmc4Y0hxNjNGSE1GT0VUU3dvNDRjWnVSV2lxTW9rIn0.eyJleHAiOjE2ODQzMzAwMjIsImlhdCI6MTY4NDMyOTcyMiwianRpIjoiNjZjNmEwMmMtNWI3OC00MTlkLWIwNjUtYjgyYmViZjM5NzhhIiwiaXNzIjoiaHR0cDovL3Nzby5sby5pYWQyLmNsb3VkOjgwODAvYXV0aC9yZWFsbXMvSW50cmFuZXQiLCJhdWQiOiJkZXYiLCJzdWIiOiI1OGM3MDI2MC0wM2E0LTQ0YWYtYTZkYS0zOTJiNzQ3MTVkNzEiLCJ0eXAiOiJCZWFyZXIiLCJhenAiOiJkZXYiLCJzY29wZSI6ImVtYWlsIHByb2ZpbGUiLCJlbWFpbF92ZXJpZmllZCI6ZmFsc2UsImNsaWVudEhvc3QiOiIxNzIuMjEuMC4xIiwicHJlZmVycmVkX3VzZXJuYW1lIjoic2VydmljZS1hY2NvdW50LWRldiIsImNsaWVudEFkZHJlc3MiOiIxNzIuMjEuMC4xIiwiY2xpZW50X2lkIjoiZGV2In0.mLMu_Cyed_nCUaPw7rAkLB6BC-ksvp6WGam_SvsFWa_1Et_5sZDvxpH0yJ9_I6FlEdOG9-WBaIv2bKPw2AjCDN-N5qcFMRPlcgc8M35O80AtRkphuKsEmiuaDWeNK7tHbjET3NEJrdNhPpJL1sKfEkaKSoDXrjCriRVYMWh8XQCCykQmnd8P7ZC1Q0_I_S5UT07eINT1W3oWqGm8zI6JQJN8TaCKLcsvnl44Ds9MH7TSfNaMDTpXQyYeXtzOfEVLN3iInp87n0tm3VSrVzuG7bMtZvj583MBkE57b2TB38bhnjTtf0pB9fRFPwn4-H3wxqUlLtg05_C2Qwkz6QhijQ
-
-
-
-###
-# @name fakeIntrospect
-
-POST http://fantocci.lo.iad2.cloud:3000/oauth/introspect HTTP/1.1
-Host: {{host}}
+### Introspect it (Basic my-app:s3cret) -> active: true
+POST http://{{host}}/oauth/introspect
 Content-Type: application/x-www-form-urlencoded
-Authorization: Basic clientId clientSecret
+Authorization: Basic bXktYXBwOnMzY3JldA==
 
 token={{buildFakeToken.response.body.*}}
 
-###
-# @name fakeIntrospect2
-
-POST http://fantocci.lo.iad2.cloud:3000/oauth/introspect HTTP/1.1
+### Wrong credentials -> 401
+POST http://{{host}}/oauth/introspect
 Content-Type: application/x-www-form-urlencoded
-Authorization: Basic clientId clientSecret
+Authorization: Basic bXktYXBwOndyb25n
 
 token={{buildFakeToken.response.body.*}}
 
+### Decode any JWT payload
+GET http://{{host}}/oauth/_decode_token
+Authorization: Bearer {{buildFakeToken.response.body.*}}
 
+### Colored page
+GET http://{{host}}/green
 
-
-###
-# @name delay
-
-POST http://fantocci.lo.iad2.cloud:3000/anything/2000 HTTP/1.1
-Host: {{host}}
-Content-Type: application/json
-Authorization: Basic clientId clientSecret
-
-token={{buildFakeToken.response.body.*}}
-
-###
-# @name delay
-
-POST http://fantocci.lo.iad2.cloud:3000/anything HTTP/1.1
-Host: {{host}}
-Content-Type: application/json
-Authorization: Basic clientId clientSecret
-Delay: 10000
-
-token={{buildFakeToken.response.body.*}}
-
-###
-# @name delay
-
-POST http://fantocci.lo.iad2.cloud:3000/anything?status=504 HTTP/1.1
-Host: {{host}}
-Content-Type: application/json
-Authorization: Basic clientId clientSecret
-Delay: 1500
-
-token={{buildFakeToken.response.body.*}}
-
-
-###
-# @name delay
-
-POST http://fantocci.lo.iad2.cloud:3000/anything/20000?delay=15000 HTTP/1.1
-Host: {{host}}
-Content-Type: application/json
-Authorization: Basic clientId clientSecret
-Delay: 1300
-Status: 403
-
-token={{buildFakeToken.response.body.*}}
+### Health
+GET http://{{host}}/health

@@ -1,0 +1,12 @@
+node_modules
+dist
+.git
+.github
+.devcontainer
+.vscode
+artworks
+*.http
+*.md
+!README.md
+.env
+fantocci.yaml

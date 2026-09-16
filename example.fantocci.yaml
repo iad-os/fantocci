@@ -1,23 +1,28 @@
-# Remove double quote to validate against json schema (vscode extension redhat.vscode-yaml is required)
-# I you want to express only a partial configuration, ## (double hash) following line.
+# Example configuration. Copy to ./fantocci.yaml (git-ignored) or point to it with
+# `fantocci --config <file>` / FANTOCCI_CONFIG. Every key is optional.
+# Editor validation: keep the line below (needs the redhat.vscode-yaml extension).
 # yaml-language-server: $schema=./fantocci.schema.json
 
 port: 3000
-host: "0.0.0.0"
-https: "false"
-anything:
-  delay: 1
-  maxDelay: 600000
-# DISABLE OIDC ENDPOINT
-# oidc: false
+host: 0.0.0.0
+logLevel: info
 
-# ENABLE OIDC ENDPOINT
-oidc:
-  issuer: https://issuer.com
-  discovery: https://issuer.com/.well-known/openid-configuration
-  clientId: application
-  clientSecret: aClientSecret
-  tokenHeader: "x-auth-token"
+# Comma separated common names for a self-signed certificate, or false.
+https: false
+
+anything:
+  delay: 1          # default delay (ms) for /anything
+  maxDelay: 600000  # max accepted delay (ms)
+
 colors:
-  title: "Colors"
-  description: "This is a colors plugin"
+  title: Colors
+  description: This is a colors plugin
+
+# OIDC tools (/oidc/*). Set to `false` (or omit) to disable.
+oidc: false
+# oidc:
+#   issuer: https://idp.example.com/realms/demo
+#   discovery: https://idp.example.com/realms/demo/.well-known/openid-configuration
+#   clientId: fantocci
+#   clientSecret: change-me
+#   tokenHeader: x-auth-token

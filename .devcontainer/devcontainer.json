@@ -1,24 +1,23 @@
-// For format details, see https://aka.ms/devcontainer.json. For config options, see the
-// README at: https://github.com/devcontainers/templates/tree/main/src/typescript-node
 {
   "name": "Fantocci Development Container",
-  // Or use a Dockerfile or Docker Compose file. More info: https://containers.dev/guide/dockerfile
-  "image": "mcr.microsoft.com/devcontainers/typescript-node:1-22-bookworm",
-  // Features to add to the dev container. More info: https://containers.dev/features.
-  // "features": {},
-  // Use 'forwardPorts' to make a list of ports inside the container available locally.
-  // "forwardPorts": [],
-  // Use 'postCreateCommand' to run commands after the container is created.
-  // "postCreateCommand": "yarn install",
-  // Configure tool-specific properties.
-  // "customizations": {},
-  // Uncomment to connect as root instead. More info: https://aka.ms/dev-containers-non-root.
+  "image": "mcr.microsoft.com/devcontainers/typescript-node:1-24-bookworm",
   "remoteUser": "node",
   "features": {
     "ghcr.io/devcontainers-extra/features/zsh-plugins:0": {
       "plugins": "ssh-agent npm",
       "omzPlugins": "https://github.com/zsh-users/zsh-autosuggestions",
       "username": "node"
+    }
+  },
+  "forwardPorts": [3000],
+  "postCreateCommand": "npm ci",
+  "customizations": {
+    "vscode": {
+      "extensions": ["biomejs.biome", "redhat.vscode-yaml", "vitest.explorer", "humao.rest-client"],
+      "settings": {
+        "editor.defaultFormatter": "biomejs.biome",
+        "editor.formatOnSave": true
+      }
     }
   }
 }

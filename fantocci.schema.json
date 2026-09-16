@@ -1,124 +1,165 @@
 {
-  "additionalProperties": false,
   "type": "object",
-  "properties": {
-    "port": {
-      "default": 3000,
-      "description": "Port to listen on",
-      "minimum": 0,
-      "maximum": 65535,
-      "type": "number"
-    },
-    "host": {
-      "default": "0.0.0.0",
-      "description": "Host to listen on",
-      "type": "string"
-    },
-    "https": {
-      "default": false,
-      "description": "If false disable HTTPS, if true certs will be generated automatically",
-      "anyOf": [
-        {
-          "description": "Comma separated Common names for the certificate, e.g. \"localhost",
-          "type": "string"
-        },
-        {
-          "const": false,
-          "type": "boolean"
-        }
-      ]
-    },
-    "anything": {
-      "default": {
-        "delay": 1,
-        "maxDelay": 600000
-      },
-      "type": "object",
-      "properties": {
-        "delay": {
-          "minimum": 0,
-          "maximum": 86400000,
-          "default": 1,
-          "type": "number"
-        },
-        "maxDelay": {
-          "minimum": 1,
-          "maximum": 86400000,
-          "default": 600000,
-          "type": "number"
-        }
-      },
-      "required": [
-        "delay",
-        "maxDelay"
-      ]
-    },
-    "colors": {
-      "type": "object",
-      "properties": {
-        "title": {
-          "default": "Colors",
-          "description": "Title of the colors plugin",
-          "type": "string"
-        },
-        "description": {
-          "default": "This is a colors plugin",
-          "description": "Description of the colors plugin",
-          "type": "string"
-        }
-      },
-      "required": [
-        "title",
-        "description"
-      ]
-    },
-    "oidc": {
-      "default": false,
-      "anyOf": [
-        {
-          "type": "object",
-          "properties": {
-            "prefix": {
-              "pattern": "/S+",
-              "type": "string"
-            },
-            "tokenHeader": {
-              "type": "string"
-            },
-            "issuer": {
-              "format": "uri",
-              "type": "string"
-            },
-            "clientId": {
-              "type": "string"
-            },
-            "clientSecret": {
-              "type": "string"
-            },
-            "discovery": {
-              "format": "uri",
-              "type": "string"
-            }
-          },
-          "required": [
-            "issuer",
-            "clientId",
-            "clientSecret"
-          ]
-        },
-        {
-          "const": false,
-          "type": "boolean"
-        }
-      ]
-    }
-  },
   "required": [
     "port",
     "host",
     "https",
+    "logLevel",
     "anything",
     "colors",
     "oidc"
-  ]
+  ],
+  "properties": {
+    "port": {
+      "type": "number",
+      "default": 3000,
+      "minimum": 0,
+      "maximum": 65535,
+      "description": "TCP port to listen on"
+    },
+    "host": {
+      "type": "string",
+      "default": "0.0.0.0",
+      "description": "Host/interface to bind"
+    },
+    "https": {
+      "anyOf": [
+        {
+          "type": "string",
+          "minLength": 1
+        },
+        {
+          "type": "boolean",
+          "const": false
+        }
+      ],
+      "default": false,
+      "description": "Comma separated common names for a self-signed certificate (e.g. \"localhost,*.lo.example\"). false disables HTTPS."
+    },
+    "logLevel": {
+      "anyOf": [
+        {
+          "type": "string",
+          "const": "fatal"
+        },
+        {
+          "type": "string",
+          "const": "error"
+        },
+        {
+          "type": "string",
+          "const": "warn"
+        },
+        {
+          "type": "string",
+          "const": "info"
+        },
+        {
+          "type": "string",
+          "const": "debug"
+        },
+        {
+          "type": "string",
+          "const": "trace"
+        },
+        {
+          "type": "string",
+          "const": "silent"
+        }
+      ],
+      "default": "info",
+      "description": "Pino log level"
+    },
+    "anything": {
+      "type": "object",
+      "required": [
+        "delay",
+        "maxDelay"
+      ],
+      "properties": {
+        "delay": {
+          "type": "number",
+          "default": 1,
+          "minimum": 0,
+          "maximum": 86400000,
+          "description": "Default response delay in milliseconds for /anything"
+        },
+        "maxDelay": {
+          "type": "number",
+          "default": 600000,
+          "minimum": 1,
+          "maximum": 86400000,
+          "description": "Upper bound for any requested delay in milliseconds"
+        }
+      },
+      "default": {},
+      "description": "Request inspection endpoint"
+    },
+    "colors": {
+      "type": "object",
+      "required": [
+        "title",
+        "description"
+      ],
+      "properties": {
+        "title": {
+          "type": "string",
+          "default": "Colors",
+          "description": "Title shown on the colored HTML pages"
+        },
+        "description": {
+          "type": "string",
+          "default": "This is a colors plugin",
+          "description": "Text shown on the colored HTML pages"
+        }
+      },
+      "default": {},
+      "description": "Colored HTML pages (handy for routing/canary demos)"
+    },
+    "oidc": {
+      "anyOf": [
+        {
+          "type": "object",
+          "required": [
+            "issuer",
+            "clientId",
+            "clientSecret"
+          ],
+          "properties": {
+            "issuer": {
+              "type": "string",
+              "format": "uri",
+              "description": "Expected `iss` claim and default discovery base URL"
+            },
+            "clientId": {
+              "type": "string",
+              "description": "Client used to call the introspection endpoint"
+            },
+            "clientSecret": {
+              "type": "string",
+              "description": "Secret of the client (client_secret_post)"
+            },
+            "discovery": {
+              "type": "string",
+              "format": "uri",
+              "description": "Discovery document URL, when it differs from `<issuer>/.well-known/openid-configuration`"
+            },
+            "tokenHeader": {
+              "type": "string",
+              "description": "Extra header to read the raw token from, before the Authorization header"
+            }
+          },
+          "description": "OIDC tools backed by a real identity provider"
+        },
+        {
+          "type": "boolean",
+          "const": false
+        }
+      ],
+      "default": false,
+      "description": "OIDC tools backed by a real identity provider. false disables the /oidc endpoints."
+    }
+  },
+  "additionalProperties": false,
+  "$id": "https://github.com/iad-os/fantocci/fantocci.schema.json"
 }
