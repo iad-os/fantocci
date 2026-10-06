@@ -1,7 +1,7 @@
 # Fantocci HTTP Test Server
 
 <p align="center">
-  <img src="./logo.png" alt="Fantocci logo" width="320">
+  <img src="https://github.com/iad-os/fantocci/blob/HEAD/logo.png" alt="Fantocci logo" width="320">
 </p>
 
 [![npm](https://img.shields.io/npm/v/@iad-os/fantocci)](https://www.npmjs.com/package/@iad-os/fantocci)
@@ -19,17 +19,20 @@ every endpoint is documented in an interactive API reference served by the app i
 
 ## Table of contents
 
-- [Quick start](#quick-start)
-- [Endpoints](#endpoints)
-  - [Request echo: `/anything`](#request-echo-anything)
-  - [Fake OAuth2 server: `/oauth`](#fake-oauth2-server-oauth)
-  - [OIDC tools: `/oidc`](#oidc-tools-oidc)
-  - [Colored pages: `/red`, `/blue`, ...](#colored-pages-red-blue-)
-- [Configuration](#configuration)
-- [Docker](#docker)
-- [Use as a library](#use-as-a-library)
-- [Development](#development)
-- [Release](#release)
+- [Fantocci HTTP Test Server](#fantocci-http-test-server)
+  - [Table of contents](#table-of-contents)
+  - [Quick start](#quick-start)
+  - [Endpoints](#endpoints)
+    - [Request echo: `/anything`](#request-echo-anything)
+    - [Fake OAuth2 server: `/oauth`](#fake-oauth2-server-oauth)
+    - [OIDC tools: `/oidc`](#oidc-tools-oidc)
+    - [Colored pages: `/red`, `/blue`, ...](#colored-pages-red-blue-)
+  - [Configuration](#configuration)
+  - [Docker](#docker)
+  - [Use as a library](#use-as-a-library)
+  - [Development](#development)
+  - [Release](#release)
+  - [License](#license)
 
 ## Quick start
 
@@ -59,10 +62,10 @@ Open <http://localhost:3000> to land on the API reference (`/ui/`). The raw Open
 Answers with a JSON description of the request it received: method, URL, headers, path params,
 query string, raw body (as a string, whatever the content type) and client IPs.
 
-| Control            | Where                                                | Notes                                                               |
-| ------------------ | ---------------------------------------------------- | ------------------------------------------------------------------- |
+| Control            | Where                                                  | Notes                                                                |
+| ------------------ | ------------------------------------------------------ | -------------------------------------------------------------------- |
 | Response delay, ms | path `/anything/1500`, header `delay`, query `?delay=` | The **smallest** requested value wins, capped at `anything.maxDelay` |
-| Status code        | header `status`, query `?status=`                    | 100–599                                                             |
+| Status code        | header `status`, query `?status=`                      | 100–599                                                              |
 
 ```sh
 curl -s localhost:3000/anything/2000?status=503 -H 'x-trace: 1' -d 'hello'
@@ -109,11 +112,11 @@ Enabled only when the `oidc` configuration is set. Fantocci discovers the provid
 uses the configured client to call it on your behalf, with the token found in the request
 (`Authorization: Bearer <token>`, or the header named by `tokenHeader` if configured).
 
-| Endpoint               | What it does                                                                         |
-| ---------------------- | ------------------------------------------------------------------------------------ |
-| `GET /oidc/jwt`        | Decodes the token payload (no verification)                                          |
-| `GET /oidc/introspect` | Calls the provider's introspection endpoint with `clientId`/`clientSecret`           |
-| `GET /oidc/userinfo`   | Calls the provider's UserInfo endpoint with the token                                |
+| Endpoint               | What it does                                                               |
+| ---------------------- | -------------------------------------------------------------------------- |
+| `GET /oidc/jwt`        | Decodes the token payload (no verification)                                |
+| `GET /oidc/introspect` | Calls the provider's introspection endpoint with `clientId`/`clientSecret` |
+| `GET /oidc/userinfo`   | Calls the provider's UserInfo endpoint with the token                      |
 
 Tokens whose `iss` differs from the configured `issuer` are rejected with `400` before any upstream
 call; upstream failures are reported as `502` with the provider's error.
@@ -134,23 +137,23 @@ Sources, in increasing order of precedence:
 3. environment variables (a `.env` file in the working directory is loaded by the CLI);
 4. CLI flags.
 
-| YAML                  | Environment          | CLI                         | Default                    | Description                                                          |
-| --------------------- | -------------------- | --------------------------- | -------------------------- | -------------------------------------------------------------------- |
-| `port`                | `PORT`               | `[port]`, `-p, --port`      | `3000`                     | TCP port                                                             |
-| `host`                | `HOST`               | `-h, --host`                | `0.0.0.0`                  | Bind address                                                         |
-| `https`               | `HTTPS`              | `--https`                   | `false`                    | Comma separated common names for a self-signed cert; `false` = HTTP  |
-| `logLevel`            | `LOG_LEVEL`          | `-l, --log-level`           | `info`                     | `fatal`, `error`, `warn`, `info`, `debug`, `trace`, `silent`         |
-| `anything.delay`      | `ANYTHING_DELAY`     | `-d, --anything-delay`      | `1`                        | Default `/anything` delay, ms                                        |
-| `anything.maxDelay`   | `ANYTHING_MAX_DELAY` | `--anything-max-delay`      | `600000`                   | Max accepted delay, ms                                               |
-| `colors.title`        | `COLORS_TITLE`       |                             | `Colors`                   | Title on the colored pages                                           |
-| `colors.description`  | `COLORS_DESCRIPTION` |                             | `This is a colors plugin`  | Text on the colored pages                                            |
-| `oidc`                |                      | `--no-oidc`                 | `false`                    | Set to `false` to disable `/oidc`                                    |
-| `oidc.issuer`         | `OIDC_ISSUER`        |                             |                            | Expected `iss`; discovery base URL unless `discovery` is set         |
-| `oidc.clientId`       | `OIDC_CLIENT_ID`     |                             |                            | Client used for introspection                                        |
-| `oidc.clientSecret`   | `OIDC_CLIENT_SECRET` |                             |                            | Its secret (`client_secret_post`)                                    |
-| `oidc.discovery`      | `OIDC_DISCOVERY`     |                             |                            | Discovery document URL, when not `<issuer>/.well-known/openid-configuration` |
-| `oidc.tokenHeader`    | `OIDC_TOKEN_HEADER`  |                             |                            | Extra header to read the raw token from                              |
-|                       | `FANTOCCI_CONFIG`    | `-c, --config`              | `./fantocci.yaml`          | YAML file path                                                       |
+| YAML                 | Environment          | CLI                    | Default                   | Description                                                                  |
+| -------------------- | -------------------- | ---------------------- | ------------------------- | ---------------------------------------------------------------------------- |
+| `port`               | `PORT`               | `[port]`, `-p, --port` | `3000`                    | TCP port                                                                     |
+| `host`               | `HOST`               | `-h, --host`           | `0.0.0.0`                 | Bind address                                                                 |
+| `https`              | `HTTPS`              | `--https`              | `false`                   | Comma separated common names for a self-signed cert; `false` = HTTP          |
+| `logLevel`           | `LOG_LEVEL`          | `-l, --log-level`      | `info`                    | `fatal`, `error`, `warn`, `info`, `debug`, `trace`, `silent`                 |
+| `anything.delay`     | `ANYTHING_DELAY`     | `-d, --anything-delay` | `1`                       | Default `/anything` delay, ms                                                |
+| `anything.maxDelay`  | `ANYTHING_MAX_DELAY` | `--anything-max-delay` | `600000`                  | Max accepted delay, ms                                                       |
+| `colors.title`       | `COLORS_TITLE`       |                        | `Colors`                  | Title on the colored pages                                                   |
+| `colors.description` | `COLORS_DESCRIPTION` |                        | `This is a colors plugin` | Text on the colored pages                                                    |
+| `oidc`               |                      | `--no-oidc`            | `false`                   | Set to `false` to disable `/oidc`                                            |
+| `oidc.issuer`        | `OIDC_ISSUER`        |                        |                           | Expected `iss`; discovery base URL unless `discovery` is set                 |
+| `oidc.clientId`      | `OIDC_CLIENT_ID`     |                        |                           | Client used for introspection                                                |
+| `oidc.clientSecret`  | `OIDC_CLIENT_SECRET` |                        |                           | Its secret (`client_secret_post`)                                            |
+| `oidc.discovery`     | `OIDC_DISCOVERY`     |                        |                           | Discovery document URL, when not `<issuer>/.well-known/openid-configuration` |
+| `oidc.tokenHeader`   | `OIDC_TOKEN_HEADER`  |                        |                           | Extra header to read the raw token from                                      |
+|                      | `FANTOCCI_CONFIG`    | `-c, --config`         | `./fantocci.yaml`         | YAML file path                                                               |
 
 The JSON Schema of the YAML file is shipped as [`fantocci.schema.json`](./fantocci.schema.json)
 (regenerate it with `fantocci --schema [file]`). Add
