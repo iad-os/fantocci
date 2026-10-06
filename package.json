@@ -1,6 +1,6 @@
 {
   "name": "@iad-os/fantocci",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Fantocci - an httpbin-inspired HTTP test server: request inspection, delays, status codes, fake OAuth2 introspection and OIDC token tools",
   "keywords": [
     "http",
@@ -63,29 +63,33 @@
   },
   "dependencies": {
     "@fastify/formbody": "^9.0.0",
-    "@fastify/swagger": "^9.8.1",
+    "@fastify/swagger": "^9.9.1",
     "@fastify/type-provider-typebox": "^6.1.0",
     "@ghii/ghii-v2": "^0.0.6",
     "@ghii/yaml-loader": "^1.1.0",
-    "@scalar/fastify-api-reference": "^1.68.0",
-    "fastify": "^5.12.4",
+    "@scalar/fastify-api-reference": "^1.73.0",
+    "fastify": "^5.12.5",
     "jwt-decode": "^4.0.0",
     "minimist": "^1.2.8",
     "mkcert": "^3.2.0",
-    "nanoid": "^6.0.1",
+    "nanoid": "^6.0.2",
     "openid-client": "^6.8.8",
-    "typebox": "^1.3.31"
+    "typebox": "^1.3.36"
   },
   "devDependencies": {
-    "@biomejs/biome": "2.5.13",
+    "@biomejs/biome": "2.5.15",
     "@mgcrea/pino-pretty-compact": "^1.6.0",
     "@tsconfig/node24": "^24.0.5",
     "@tsconfig/strictest": "^2.0.8",
     "@types/minimist": "^1.2.5",
-    "@types/node": "^24.13.4",
+    "@types/node": "^24.19.1",
     "rimraf": "^6.1.3",
-    "tsx": "^4.23.13",
+    "tsx": "^4.23.15",
     "typescript": "^7.0.2",
-    "vitest": "^5.0.0"
+    "vitest": "^5.0.3"
+  },
+  "allowScripts": {
+    "esbuild@0.28.2": true,
+    "fsevents@2.3.3": true
   }
 }
