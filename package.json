@@ -1,6 +1,6 @@
 {
   "name": "@iad-os/fantocci",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Fantocci - an httpbin-inspired HTTP test server: request inspection, delays, status codes, fake OAuth2 introspection and OIDC token tools",
   "keywords": [
     "http",

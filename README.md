@@ -228,7 +228,8 @@ requests in [`test.http`](./test.http) and [`oidc-test.http`](./oidc-test.http).
 
 1. Update `version` in `package.json` and the [CHANGELOG](./CHANGELOG.md), commit and push to `main`.
 2. Create a GitHub Release with tag `v<version>`. The release workflow re-runs CI and publishes to
-   npm with provenance; it fails if the tag and `package.json` disagree.
+   npm with provenance through npm trusted publishing (no token); it fails if the tag and
+   `package.json` disagree.
 
 ## License
 

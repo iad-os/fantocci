@@ -6,6 +6,11 @@ All notable changes to this project are documented here. The format follows
 
 ## [Unreleased]
 
+### Changed
+
+- The release workflow publishes to npm through trusted publishing (OIDC) instead of an `NPM_TOKEN` secret.
+- GitHub Actions moved to `actions/checkout@v6` / `actions/setup-node@v6` (Node 24 runtime) on `ubuntu-24.04`; Biome config schema bumped to 2.5.15.
+
 ### Security
 
 - Replaced `mkcert` with `@peculiar/x509` (WebCrypto) for the self-signed HTTPS certificates, dropping the vulnerable transitive `node-forge` dependency ([GHSA-86w9-cpqp-85rv](https://github.com/advisories/GHSA-86w9-cpqp-85rv)).
