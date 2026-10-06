@@ -1,3 +1,4 @@
+import { createPrivateKey, X509Certificate } from 'node:crypto';
 import { describe, expect, it } from 'vitest';
 import { calculateDelay } from '../plugins/anything.js';
 import { createCertificate } from '../utils/certificate.js';
@@ -95,6 +96,7 @@ describe('createCertificate', () => {
       cert: {
         domains: [
           'localhost',
+          '127.0.0.1',
         ],
         validity: 1,
         organization: 'Test',
@@ -102,5 +104,13 @@ describe('createCertificate', () => {
     });
     expect(certs.ca.cert).toContain('BEGIN CERTIFICATE');
     expect(certs.certs.key).toContain('PRIVATE KEY');
+    const ca = new X509Certificate(certs.ca.cert);
+    const leaf = new X509Certificate(certs.certs.cert);
+    expect(ca.ca).toBe(true);
+    expect(leaf.checkIssued(ca)).toBe(true);
+    expect(leaf.verify(ca.publicKey)).toBe(true);
+    expect(leaf.checkHost('localhost')).toBe('localhost');
+    expect(leaf.checkIP('127.0.0.1')).toBe('127.0.0.1');
+    expect(leaf.checkPrivateKey(createPrivateKey(certs.certs.key))).toBe(true);
   });
 });
